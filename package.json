@@ -1,0 +1,25 @@
+{
+  "name": "model-stacker",
+  "version": "0.1.0",
+  "private": true,
+  "description": "堆积人模型管理平台 Monorepo",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "dev:web": "pnpm --filter @model-stacker/web dev",
+    "dev:admin": "pnpm --filter @model-stacker/admin dev",
+    "dev:server": "pnpm --filter @model-stacker/server start:dev",
+    "db:generate": "pnpm --filter @model-stacker/server prisma:generate",
+    "db:migrate": "pnpm --filter @model-stacker/server prisma:migrate",
+    "db:deploy": "pnpm --filter @model-stacker/server prisma:deploy",
+    "db:studio": "pnpm --filter @model-stacker/server prisma:studio"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild"
+    ]
+  }
+}

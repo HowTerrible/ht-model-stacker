@@ -1,0 +1,50 @@
+import type { ModelScale, ModelType, ProductKind, ProductStatus, ToolType } from '../enums/product';
+import type { DateTimeString, Id, TimestampFields } from './common';
+
+/** 产品（模型 / 工具辅料） */
+export interface Product extends TimestampFields {
+  id: Id;
+  /** 厂家 ID */
+  manufacturerId: Id;
+  /** 产品名称 */
+  name: string;
+  /** 货号 / 型号 */
+  modelNo?: string;
+  /** 种类：模型 / 工具辅料 */
+  kind: ProductKind;
+  /** 模型子类 */
+  modelType?: ModelType;
+  /** 工具辅料子类 */
+  toolType?: ToolType;
+  /** 比例 */
+  scale?: ModelScale | string;
+  /** 发售年份 */
+  year?: number;
+  /** 发售日期 */
+  releaseDate?: DateTimeString;
+  /** 简介 */
+  description?: string;
+  /** 说明书地址 */
+  manualUrl?: string;
+  /** 照片地址列表 */
+  photos: string[];
+  /** 所属题材节点 ID（题材为树形结构，见 Theme） */
+  themeId?: Id;
+  /** 题材标签（用于关联竞品、检索） */
+  tags: string[];
+  status: ProductStatus;
+}
+
+export interface ProductQuery {
+  keyword?: string;
+  kind?: ProductKind;
+  modelType?: ModelType;
+  manufacturerId?: Id;
+  /** 按题材节点筛选 */
+  themeId?: Id;
+  status?: ProductStatus;
+  tags?: string[];
+  year?: number;
+  page?: number;
+  pageSize?: number;
+}

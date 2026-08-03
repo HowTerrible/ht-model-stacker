@@ -1,0 +1,26 @@
+{
+  "name": "@model-stacker/web",
+  "version": "0.1.0",
+  "description": "ModelStacker 堆积人前端（H5）",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@model-stacker/data": "workspace:*",
+    "pinia": "^4.0.2",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.0",
+    "vue-tsc": "^3.3.9"
+  }
+}
