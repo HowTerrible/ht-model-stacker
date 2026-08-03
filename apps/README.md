@@ -1,1 +1,0 @@
-# ht-model-stacker/apps
