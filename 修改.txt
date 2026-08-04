@@ -1,0 +1,14 @@
+packages/data/src/types/wip.ts:
+1. 中烂尾接口增加烂尾图片数组
+2. 完成进度在实际制作过程中难以量化，改为阶段枚举，包含拆袋未组装、部分组装、组装完成未上色，部分上色，上色未旧化，部分旧化，未喷保护漆
+packages/data/src/types/stack.ts:
+1. 堆积增加完成进度,枚举同上.
+2. 堆积增加字段关联烂尾记录
+packages/data/src/enums/stack.ts:
+1. StackStatus中的枚举烂尾改为wip或以wip为词根的单词, 并同步检查其他枚举,  统一用词. 并将这些用词以表格的形式更新到readme.md作为术语词典
+
+packages\data\src\enums\product.ts增加材质枚举:塑料射出、乐高积木、3D打印、树脂、蚀刻片(铜/钢)、纸/布、石膏/纸黏土等塑性土、木/竹、亚克力板、泡沫板、其他金属、其他
+packages/data/src/enums/product.ts中的Product增加
+1. 主体材质：对应枚举：材质枚举
+2. 配件：材质枚举数组
+3. 模型子类：改为数组，使用上同tag标记，同时增加军事模型-轨道载具、民用模型-轨道载具、模型套改、套件、场景模型
