@@ -4,6 +4,16 @@ export type Id = number;
 /** ISO8601 日期时间字符串 */
 export type DateTimeString = string;
 
+/** 图片资源（原图 + 缩略图） */
+export interface Image {
+  /** 原图地址 */
+  url: string;
+  /** 缩略图地址 */
+  thumbnailUrl: string;
+  /** 图片说明 */
+  alt?: string;
+}
+
 /** 时间范围 */
 export interface TimeRange {
   start: string;

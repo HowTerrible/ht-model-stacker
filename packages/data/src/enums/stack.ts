@@ -6,8 +6,8 @@ export enum StackStatus {
   IN_PROGRESS = 'IN_PROGRESS',
   /** 已完成 */
   FINISHED = 'FINISHED',
-  /** 烂尾 */
-  ABANDONED = 'ABANDONED',
+  /** 烂尾（已转为烂尾记录） */
+  WIP = 'WIP',
   /** 已出 / 转让 */
   SOLD = 'SOLD',
 }

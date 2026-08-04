@@ -6,7 +6,7 @@ export enum ProductKind {
   TOOL_SUPPLY = 'TOOL_SUPPLY',
 }
 
-/** 模型子类（比例模型四大类型细分） */
+/** 模型子类（比例模型细分，可多选，用法同 tag 标记） */
 export enum ModelType {
   /** 军事模型-坦克 */
   MILITARY_TANK = 'MILITARY_TANK',
@@ -16,14 +16,24 @@ export enum ModelType {
   MILITARY_SHIP = 'MILITARY_SHIP',
   /** 军事模型-兵人 */
   MILITARY_FIGURE = 'MILITARY_FIGURE',
+  /** 军事模型-轨道载具 */
+  MILITARY_RAIL_VEHICLE = 'MILITARY_RAIL_VEHICLE',
   /** 民用模型-民用车 */
   CIVIL_CAR = 'CIVIL_CAR',
   /** 民用模型-摩托车 */
   CIVIL_MOTORCYCLE = 'CIVIL_MOTORCYCLE',
+  /** 民用模型-轨道载具 */
+  CIVIL_RAIL_VEHICLE = 'CIVIL_RAIL_VEHICLE',
   /** 手办 */
   FIGURINE = 'FIGURINE',
   /** 战旗（战棋） */
   WAR_GAME = 'WAR_GAME',
+  /** 模型套改（改造 / 升级件） */
+  UPGRADE_SET = 'UPGRADE_SET',
+  /** 套件 */
+  KIT = 'KIT',
+  /** 场景模型 */
+  SCENE_MODEL = 'SCENE_MODEL',
 }
 
 /** 工具辅料子类 */
@@ -55,6 +65,34 @@ export enum ModelScale {
   S_1_700 = '1/700',
   /** 无比例（手办、景品等） */
   NON_SCALE = 'NON_SCALE',
+}
+
+/** 材质 */
+export enum Material {
+  /** 塑料射出 */
+  INJECTED_PLASTIC = 'INJECTED_PLASTIC',
+  /** 乐高积木 */
+  LEGO_BRICK = 'LEGO_BRICK',
+  /** 3D 打印 */
+  _3D_PRINTED = '3D_PRINTED',
+  /** 树脂 */
+  RESIN = 'RESIN',
+  /** 蚀刻片（铜 / 钢） */
+  PHOTO_ETCHED = 'PHOTO_ETCHED',
+  /** 纸 / 布 */
+  PAPER_FABRIC = 'PAPER_FABRIC',
+  /** 石膏 / 纸黏土等塑性土 */
+  PLASTER_CLAY = 'PLASTER_CLAY',
+  /** 木 / 竹 */
+  WOOD_BAMBOO = 'WOOD_BAMBOO',
+  /** 亚克力板 */
+  ACRYLIC_SHEET = 'ACRYLIC_SHEET',
+  /** 泡沫板 */
+  FOAM_BOARD = 'FOAM_BOARD',
+  /** 其他金属 */
+  OTHER_METAL = 'OTHER_METAL',
+  /** 其他 */
+  OTHER = 'OTHER',
 }
 
 /** 产品状态 */

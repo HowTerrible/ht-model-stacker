@@ -1,5 +1,6 @@
 import type { Currency } from '../enums/price';
 import type { PurchaseChannel, StackStatus } from '../enums/stack';
+import type { WipStage } from '../enums/wip';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
 /** 堆积记录（已购买的模型 / 工具辅料） */
@@ -14,12 +15,20 @@ export interface Stack extends TimestampFields {
   currency: Currency;
   channel?: PurchaseChannel;
   status: StackStatus;
+  /** 完成进度（阶段，开工后填写，枚举同 WipStage） */
+  stage?: WipStage;
+  /** 关联的烂尾记录 ID（该堆积烂尾后对应 Wip） */
+  wipId?: Id;
   notes?: string;
 }
 
 export interface StackQuery {
   userId: Id;
   status?: StackStatus;
+  /** 按完成进度（阶段）筛选 */
+  stage?: WipStage;
+  /** 是否只查已关联烂尾的堆积 */
+  onlyWithWip?: boolean;
   /** 按购买时间过滤 */
   startDate?: string;
   endDate?: string;
