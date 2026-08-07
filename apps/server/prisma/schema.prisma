@@ -35,6 +35,7 @@ model Manufacturer {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   products    Product[]
+  articles    Article[]
 
   @@index([name])
   @@map("manufacturer")
@@ -69,7 +70,9 @@ model Product {
   name           String
   modelNo        String?
   kind           String       @default("MODEL")
-  modelType      String?
+  modelTypes     String?
+  material       String?
+  accessoryMaterials String?
   toolType       String?
   scale          String?
   year           Int?
@@ -84,13 +87,14 @@ model Product {
   prices         PriceRecord[]
   stacks         Stack[]
   wips           Wip[]
+  articles       Article[]
   relationsFrom  ProductRelation[] @relation("ProductRelationsFrom")
   relationsTo    ProductRelation[] @relation("ProductRelationsTo")
 
   @@index([manufacturerId])
   @@index([themeId])
   @@index([name])
-  @@index([kind, modelType])
+  @@index([kind, modelTypes])
   @@map("product")
 }
 
@@ -116,17 +120,21 @@ model Stack {
   userId        Int
   product       Product  @relation(fields: [productId], references: [id])
   productId     Int
+  wip           Wip?     @relation(fields: [wipId], references: [id], onDelete: SetNull)
+  wipId         Int?
   purchasedAt   DateTime @default(now())
   purchasePrice Float?
   currency      String   @default("CNY")
   channel       String?
   status        String   @default("UNSTARTED")
+  stage         String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   @@index([userId, purchasedAt])
   @@index([productId])
+  @@index([wipId])
   @@map("stack")
 }
 
@@ -137,9 +145,11 @@ model Wip {
   product    Product  @relation(fields: [productId], references: [id])
   productId  Int
   startedAt  DateTime @default(now())
-  progress   Int      @default(0)
-  status     String   @default("ABANDONED")
+  stage      String   @default("UNASSEMBLED")
+  status     String   @default("WIP")
+  photos     String?
   notes      String?
+  stacks     Stack[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -162,4 +172,21 @@ model ProductRelation {
   @@index([productId])
   @@index([relatedProductId])
   @@map("product_relation")
+}
+
+model Article {
+  id            Int            @id @default(autoincrement())
+  type          String         @default("TRIVIA")
+  title         String
+  content       String
+  sourceUrl     String?
+  products      Product[]
+  manufacturers Manufacturer[]
+  tags          String?
+  status        String         @default("DRAFT")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([type, status])
+  @@map("article")
 }
