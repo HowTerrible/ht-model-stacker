@@ -1,3 +1,4 @@
+export * from './enums/article';
 export * from './enums/common';
 export * from './enums/price';
 export * from './enums/product';
@@ -5,6 +6,7 @@ export * from './enums/relation';
 export * from './enums/stack';
 export * from './enums/stat';
 export * from './enums/wip';
+export * from './types/article';
 export * from './types/common';
 export * from './types/manufacturer';
 export * from './types/price';

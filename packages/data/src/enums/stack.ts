@@ -18,6 +18,8 @@ export enum PurchaseChannel {
   TAOBAO = 'TAOBAO',
   /** 京东 */
   JD = 'JD',
+  /** 拼多多 */
+  PDD = 'PDD',
   /** 闲鱼 */
   XIANYU = 'XIANYU',
   /** 线下实体店 */
