@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type { User } from '@model-stacker/data';
-import { clearToken, getToken, request, setToken } from '@/api/client';
+import { clearToken, getToken, setToken } from '@/api/client';
+import { getUserProfile, loginByPassword, type LoginParams } from '@/api/auth';
 
 function emptyUser(): User {
   return {
@@ -14,8 +15,8 @@ function emptyUser(): User {
 
 /**
  * 用户信息与权限仅保存在内存中（不写 localStorage），
- * 每次应用启动凭 token 调用 /auth/me 重新获取；
- * 权限的真实校验由服务端 RolesGuard 完成，前端只做 UI 展示控制。
+ * 每次应用启动凭 token 重新获取用户信息；
+ * 当前登录与用户信息均为 mock 数据，后端就绪后仅需替换 api/auth.ts 内部实现。
  */
 export const useUserStore = defineStore('user', {
   state: (): User => emptyUser(),
@@ -30,12 +31,12 @@ export const useUserStore = defineStore('user', {
     },
   },
   actions: {
-    async login(userId: number) {
-      const { token, user } = await request<{ token: string; user: User }>('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ userId }),
-      });
+    /** 账号密码登录，成功后查询并保存用户信息 */
+    async login(params: LoginParams) {
+      const { token } = await loginByPassword(params);
       setToken(token);
+      // 登录成功后查询用户信息
+      const user = await getUserProfile();
       Object.assign(this, user);
     },
     async fetchProfile() {
@@ -43,7 +44,7 @@ export const useUserStore = defineStore('user', {
         return;
       }
       try {
-        const user = await request<User>('/auth/me');
+        const user = await getUserProfile();
         Object.assign(this, user);
       } catch {
         this.logout();

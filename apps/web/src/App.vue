@@ -1,8 +1,15 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+/** 登录页不展示头部与底部导航 */
+const isLoginPage = computed(() => route.name === 'login');
+</script>
 
 <template>
-  <div class="app">
-    <header class="app-header">
+  <div class="app" :class="{ 'app--bare': isLoginPage }">
+    <header v-if="!isLoginPage" class="app-header">
       <h1 class="app-title">ModelStacker</h1>
     </header>
 
@@ -10,7 +17,7 @@
       <router-view />
     </main>
 
-    <nav class="app-nav">
+    <nav v-if="!isLoginPage" class="app-nav">
       <router-link to="/">堆积</router-link>
       <router-link to="/stats">花销</router-link>
       <router-link to="/wip">烂尾</router-link>
@@ -57,6 +64,13 @@ body {
 .app-main {
   flex: 1;
   padding: 12px;
+}
+
+/* 登录页独占整屏，去掉默认留白 */
+.app--bare .app-main {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
 .app-nav {
