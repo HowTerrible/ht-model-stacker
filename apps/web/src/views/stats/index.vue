@@ -17,9 +17,11 @@ const granularities = Object.values(TimeGranularity);
   </section>
 </template>
 
-<style scoped>
-.page h2 {
-  margin-bottom: 8px;
+<style scoped lang="scss">
+.page {
+  h2 {
+    margin-bottom: 8px;
+  }
 }
 
 .tip {

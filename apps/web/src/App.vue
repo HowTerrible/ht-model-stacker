@@ -1,28 +1,13 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useThemeStore } from '@/stores/theme';
 
-const route = useRoute();
-/** 登录页不展示头部与底部导航 */
-const isLoginPage = computed(() => route.name === 'login');
+const themeStore = useThemeStore();
+// 应用启动时应用持久化主题的 token（写入 :root）
+themeStore.init();
 </script>
 
 <template>
-  <div class="app" :class="{ 'app--bare': isLoginPage }">
-    <header v-if="!isLoginPage" class="app-header">
-      <h1 class="app-title">ModelStacker</h1>
-    </header>
-
-    <main class="app-main">
-      <router-view />
-    </main>
-
-    <nav v-if="!isLoginPage" class="app-nav">
-      <router-link to="/">堆积</router-link>
-      <router-link to="/stats">花销</router-link>
-      <router-link to="/wip">烂尾</router-link>
-    </nav>
-  </div>
+  <router-view />
 </template>
 
 <style>
@@ -37,58 +22,14 @@ body {
   height: 100%;
 }
 
+/* 暗色主题下让原生滚动条 / 表单控件跟随深色渲染 */
+html.app-theme-dark {
+  color-scheme: dark;
+}
+
 body {
   font-family: system-ui, -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
-  background: #f5f6f8;
-  color: #333;
-}
-
-.app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.app-header {
-  padding: 16px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
-}
-
-.app-title {
-  font-size: 18px;
-}
-
-.app-main {
-  flex: 1;
-  padding: 12px;
-}
-
-/* 登录页独占整屏，去掉默认留白 */
-.app--bare .app-main {
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-}
-
-.app-nav {
-  display: flex;
-  border-top: 1px solid #eee;
-  background: #fff;
-}
-
-.app-nav a {
-  flex: 1;
-  padding: 10px 0;
-  text-align: center;
-  text-decoration: none;
-  color: #666;
-}
-
-.app-nav a.router-link-active {
-  color: #1677ff;
-  font-weight: 600;
+  background: var(--app-page-bg, #f5f6f8);
+  color: var(--app-text-color, #333);
 }
 </style>

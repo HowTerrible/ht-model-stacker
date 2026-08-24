@@ -113,7 +113,9 @@ async function handleLogin() {
   </section>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+$primary-color: #1677ff;
+
 .login-page {
   display: flex;
   align-items: center;
@@ -127,7 +129,7 @@ async function handleLogin() {
   width: 100%;
   max-width: 400px;
   padding: 32px 20px;
-  background: #fff;
+  background: var(--app-surface-color, #fff);
   border-radius: 12px;
 }
 
@@ -138,7 +140,7 @@ async function handleLogin() {
 
 .login-subtitle {
   margin: 8px 0 24px;
-  color: #888;
+  color: var(--app-text-secondary, #888);
   font-size: 14px;
   text-align: center;
 }
@@ -156,7 +158,7 @@ async function handleLogin() {
 .field-label {
   display: block;
   margin-bottom: 6px;
-  color: #666;
+  color: var(--el-text-color-secondary, #666);
   font-size: 14px;
 }
 
@@ -164,21 +166,21 @@ async function handleLogin() {
 .field-input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--el-border-color, #ddd);
   border-radius: 8px;
-  background: #f7f8fa;
+  background: var(--el-fill-color-light, #f7f8fa);
   font-size: 16px;
-  color: #333;
+  color: inherit;
   outline: none;
-}
 
-.field-input:focus {
-  border-color: #1677ff;
-  background: #fff;
-}
+  &:focus {
+    border-color: $primary-color;
+    background: var(--el-bg-color, #fff);
+  }
 
-.field-input::placeholder {
-  color: #bbb;
+  &::placeholder {
+    color: var(--el-text-color-placeholder, #bbb);
+  }
 }
 
 .login-error {
@@ -195,46 +197,46 @@ async function handleLogin() {
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: #666;
+  color: var(--el-text-color-secondary, #666);
   cursor: pointer;
   user-select: none;
-}
 
-.agreement-checkbox {
-  width: 16px;
-  height: 16px;
-  accent-color: #1677ff;
-  cursor: pointer;
-}
+  &-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: $primary-color;
+    cursor: pointer;
+  }
 
-.agreement-link {
-  color: #1677ff;
-  cursor: pointer;
-}
+  &-link {
+    color: $primary-color;
+    cursor: pointer;
 
-.agreement-link:focus-visible {
-  outline: 2px solid #1677ff;
-  outline-offset: 2px;
-  border-radius: 2px;
+    &:focus-visible {
+      outline: 2px solid $primary-color;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
 }
 
 .login-button {
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #1677ff;
+  background: $primary-color;
   color: #fff;
   font-size: 16px;
   cursor: pointer;
-}
 
-.login-button:active {
-  background: #0958d9;
-}
+  &:active {
+    background: #0958d9;
+  }
 
-.login-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 /* 平板及以上屏幕：卡片增加阴影与留白 */
