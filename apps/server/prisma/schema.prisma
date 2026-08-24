@@ -11,14 +11,18 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  nickname  String
-  avatarUrl String?
-  email     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  stacks    Stack[]
-  wips      Wip[]
+  id          Int      @id @default(autoincrement())
+  nickname    String
+  avatarUrl   String?
+  email       String?
+  phone       String?
+  qq          String?
+  wechat      String?
+  permissions String   @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  stacks      Stack[]
+  wips        Wip[]
 
   @@map("user")
 }
@@ -68,6 +72,7 @@ model Product {
   theme          Theme?       @relation(fields: [themeId], references: [id], onDelete: SetNull)
   themeId        Int?
   name           String
+  officialName   String?
   modelNo        String?
   kind           String       @default("MODEL")
   modelTypes     String?
@@ -78,7 +83,7 @@ model Product {
   year           Int?
   releaseDate    DateTime?
   description    String?
-  manualUrl      String?
+  manuals        String?
   photos         String?
   tags           String?
   status         String       @default("ON_SALE")
