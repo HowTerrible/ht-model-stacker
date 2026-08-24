@@ -11,8 +11,7 @@
     "start:prod": "node dist/main",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:deploy": "prisma migrate deploy",
+    "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
@@ -20,6 +19,7 @@
     "@nestjs/common": "^11.1.28",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.28",
+    "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.1.28",
     "@prisma/client": "^6.19.3",
     "reflect-metadata": "^0.2.2",
@@ -29,6 +29,7 @@
     "@nestjs/cli": "^11.0.24",
     "@nestjs/schematics": "^11.1.0",
     "@nestjs/testing": "^11.1.28",
+    "@types/express": "^5.0.6",
     "@types/node": "^26.1.2",
     "prisma": "^6.19.3",
     "typescript": "^5.9.3"
