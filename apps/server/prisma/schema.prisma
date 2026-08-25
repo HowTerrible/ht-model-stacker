@@ -1,5 +1,8 @@
 // ModelStacker 数据模型
 // 枚举值（status/kind/type/currency 等）以字符串存储，code 定义见 @model-stacker/data
+//
+// ⚠️ 本项目不使用 migrations：调整表结构直接改本文件，然后执行 `pnpm db:push` 同步。
+// 禁止提交任何 prisma/migrations/ 目录（详见根目录 AGENTS.md）。
 
 generator client {
   provider = "prisma-client-js"
@@ -36,6 +39,10 @@ model Manufacturer {
   description String?
   logoUrl     String?
   status      String   @default("ACTIVE")
+  reviewStatus String  @default("PENDING")
+  reviewDate  DateTime?
+  reviewerId  Int?
+  reviewNote  String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   products    Product[]
@@ -87,6 +94,10 @@ model Product {
   photos         String?
   tags           String?
   status         String       @default("ON_SALE")
+  reviewStatus   String       @default("PENDING")
+  reviewDate     DateTime?
+  reviewerId     Int?
+  reviewNote     String?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   prices         PriceRecord[]
@@ -189,6 +200,10 @@ model Article {
   manufacturers Manufacturer[]
   tags          String?
   status        String         @default("DRAFT")
+  reviewStatus  String         @default("PENDING")
+  reviewDate    DateTime?
+  reviewerId    Int?
+  reviewNote    String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

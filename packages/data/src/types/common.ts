@@ -1,3 +1,5 @@
+import type { ReviewStatus } from '../enums/common';
+
 /** 主键 ID（SQLite 自增整数） */
 export type Id = number;
 
@@ -45,4 +47,16 @@ export interface ApiResponse<T = unknown> {
 export interface TimestampFields {
   createdAt: DateTimeString;
   updatedAt: DateTimeString;
+}
+
+/** 审核相关字段 */
+export interface ReviewFields {
+  /** 审核状态 */
+  reviewStatus?: ReviewStatus;
+  /** 审核日期 */
+  reviewDate?: DateTimeString;
+  /** 审核人 ID */
+  reviewerId?: Id;
+  /** 审核备注 */
+  reviewNote?: string;
 }

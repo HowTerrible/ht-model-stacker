@@ -1,8 +1,9 @@
 import type { ArticleStatus, ArticleType } from '../enums/article';
-import type { DateTimeString, Id, TimestampFields } from './common';
+import type { ReviewStatus } from '../enums/common';
+import type { DateTimeString, Id, ReviewFields, TimestampFields } from './common';
 
 /** 富文本文章（产品趣闻、参考文献、制作窍门 / 小技巧、评测、科普等），与产品、厂家多对多关联 */
-export interface Article extends TimestampFields {
+export interface Article extends TimestampFields, ReviewFields {
   id: Id;
   /** 标题 */
   title: string;
@@ -28,6 +29,7 @@ export interface ArticleQuery {
   productId?: Id;
   manufacturerId?: Id;
   status?: ArticleStatus;
+  reviewStatus?: ReviewStatus;
   page?: number;
   pageSize?: number;
 }

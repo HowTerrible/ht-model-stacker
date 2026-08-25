@@ -51,8 +51,8 @@ pnpm install
 # 2. 构建公共数据模块（其他模块依赖它）
 pnpm --filter @model-stacker/data build
 
-# 3. 初始化数据库（生成 client + 首次迁移）
-pnpm db:migrate
+# 3. 初始化数据库（按 schema.prisma 生成 dev.db + Prisma Client）
+pnpm db:push
 
 # 4. 启动
 pnpm dev:server   # 后端 http://localhost:3000/api
@@ -65,9 +65,12 @@ pnpm dev:admin    # 管理后台  http://localhost:5174
 ```bash
 pnpm build        # 全量构建（自动按依赖顺序）
 pnpm typecheck    # 全量类型检查
+pnpm db:push      # 调整 schema.prisma 后同步数据库结构
 pnpm db:studio    # Prisma Studio 可视化查看数据库
-pnpm db:deploy    # 生产环境执行已有迁移
 ```
+
+> 数据库约定：项目当前**不使用迁移文件**，`schema.prisma` 是唯一事实来源，
+> 改表后执行 `pnpm db:push` 即可；禁止提交 `prisma/migrations/`。详见 `AGENTS.md`。
 
 ## 数据约定
 
@@ -113,4 +116,4 @@ pnpm db:deploy    # 生产环境执行已有迁移
 2. **说明书 / 照片存储**：目前产品表中用 URL 字段指向外部文件，后续若自建文件存储，建议独立一个对象存储 / 静态文件模块。
 3. **价格采集**：产品价格走向目前依赖管理后台手工录入；若需自动抓取，建议后续独立「采集模块」。
 4. **Excel 导入**：堆积的 Excel 导入需在后端引入解析库（如 `xlsx`），属业务功能，后续实现。
-5. **权限体系**：后台与堆积人前端目前未做登录鉴权，后续需补充认证模块。
+5. **权限体系**：已搭好 JWT 鉴权骨架（`apps/server/src/auth/`，登录 stub 待接入真实凭证）；前端 localStorage 只存 token、权限存内存仅做展示控制，服务端 Guard 强制校验。

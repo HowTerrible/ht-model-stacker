@@ -1,8 +1,8 @@
-import type { CommonStatus } from '../enums/common';
-import type { Id, TimestampFields } from './common';
+import type { CommonStatus, ReviewStatus } from '../enums/common';
+import type { Id, ReviewFields, TimestampFields } from './common';
 
 /** 产品厂家 / 品牌 */
-export interface Manufacturer extends TimestampFields {
+export interface Manufacturer extends TimestampFields, ReviewFields {
   id: Id;
   /** 厂家 / 品牌简称 */
   name: string;
@@ -23,6 +23,7 @@ export interface ManufacturerQuery {
   keyword?: string;
   country?: string;
   status?: CommonStatus;
+  reviewStatus?: ReviewStatus;
   page?: number;
   pageSize?: number;
 }

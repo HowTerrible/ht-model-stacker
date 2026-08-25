@@ -1,8 +1,9 @@
 import type { Material, ModelScale, ModelType, ProductKind, ProductStatus, ToolType } from '../enums/product';
-import type { DateTimeString, Id, Image, TimestampFields } from './common';
+import type { ReviewStatus } from '../enums/common';
+import type { DateTimeString, Id, Image, ReviewFields, TimestampFields } from './common';
 
 /** 产品（模型 / 工具辅料） */
-export interface Product extends TimestampFields {
+export interface Product extends TimestampFields, ReviewFields {
   id: Id;
   /** 厂家 ID */
   manufacturerId: Id;
@@ -51,6 +52,7 @@ export interface ProductQuery {
   /** 按题材节点筛选 */
   themeId?: Id;
   status?: ProductStatus;
+  reviewStatus?: ReviewStatus;
   tags?: string[];
   year?: number;
   page?: number;
