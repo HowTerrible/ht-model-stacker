@@ -17,18 +17,48 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('@/views/home/index.vue'),
+      redirect: { name: 'my' },
       meta: { requiresAuth: true },
       children: [
         {
-          path: 'stats',
-          name: 'stats',
-          component: () => import('@/views/stats/index.vue'),
+          // 我的堆积（My）：统计、管理用户的堆积
+          // 子模块：个人主页（默认）/ 我的堆积列表 / 详细统计
+          path: 'my',
+          component: () => import('@/views/my/layout.vue'),
+          meta: { requiresAuth: true },
+          children: [
+            {
+              path: '',
+              name: 'my',
+              component: () => import('@/views/my/index.vue'),
+              meta: { requiresAuth: true },
+            },
+            {
+              path: 'my-stack',
+              name: 'my-stack',
+              component: () => import('@/views/my/my-stack/index.vue'),
+              meta: { requiresAuth: true },
+            },
+            {
+              path: 'statistics',
+              name: 'my-statistics',
+              component: () => import('@/views/my/statistics/index.vue'),
+              meta: { requiresAuth: true },
+            },
+          ],
+        },
+        {
+          // 资料库（DataBase）：检索品牌、产品、产品价格等内容
+          path: 'database',
+          name: 'database',
+          component: () => import('@/views/database/index.vue'),
           meta: { requiresAuth: true },
         },
         {
-          path: 'wip',
-          name: 'wip',
-          component: () => import('@/views/wip/index.vue'),
+          // 模法（ModelMagic）：模型制作的技巧等文章
+          path: 'model-magic',
+          name: 'model-magic',
+          component: () => import('@/views/model-magic/index.vue'),
           meta: { requiresAuth: true },
         },
       ],

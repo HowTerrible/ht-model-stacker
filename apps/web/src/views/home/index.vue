@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { StackStatus } from '@model-stacker/data';
 import { useUserStore } from '@/stores/user';
 import { useThemeStore } from '@/stores/theme';
 
 interface NavItem {
   /** 路由路径，同时作为 el-menu 的 index */
   path: string;
+  /** 展示名（中文） */
   label: string;
+  /** 英文代号 */
+  en: string;
   /** 需要持有的权限码（任一满足即可），为空表示不限制 */
   roles?: string[];
 }
@@ -17,31 +19,43 @@ const route = useRoute();
 const userStore = useUserStore();
 const themeStore = useThemeStore();
 
-/** 底部导航项，按用户权限过滤（由 home 页面统一处理权限展示控制） */
+/** 导航项（三大模块），按用户权限过滤（由 home 页面统一处理权限展示控制） */
 const navItems = computed<NavItem[]>(() => {
   const items: NavItem[] = [
-    { path: '/', label: '堆积' },
-    { path: '/stats', label: '花销' },
-    { path: '/wip', label: '烂尾' },
+    { path: '/my', label: '我的堆积', en: 'My' },
+    { path: '/database', label: '资料库', en: 'DataBase' },
+    { path: '/model-magic', label: '模法', en: 'ModelMagic' },
   ];
   return items.filter(
     (item) => !item.roles?.length || item.roles.some((role) => userStore.permissionList.includes(role)),
   );
 });
 
-/** 是否处于默认内容（/）而非子页面 */
-const isDefaultView = computed(() => route.name === 'home');
+/** el-menu 开启 router 模式后按 index 跳转，主导航按一级路径匹配激活项（模块内子路由如 /my/my-stack 归属 /my） */
+const activePath = computed(() => `/${route.path.split('/')[1] || ''}`);
 
-/** el-menu 开启 router 模式后按 index 跳转，当前路由即激活项 */
-const activePath = computed(() => route.path);
+/** 移动端抽屉导航展开状态 */
+const drawerVisible = ref(false);
 
-const statuses = Object.values(StackStatus);
+watch(
+  () => route.fullPath,
+  () => {
+    drawerVisible.value = false;
+  },
+);
 </script>
 
 <template>
   <div class="page-shell">
     <header class="page-header">
-      <h1 class="page-title">ModelStacker</h1>
+      <div class="header-main">
+        <el-button
+          class="nav-toggle"
+          size="small"
+          @click="drawerVisible = true"
+        >导航</el-button>
+        <h1 class="page-title">湖中坦克的智慧</h1>
+      </div>
       <el-button
         class="theme-toggle"
         size="small"
@@ -49,35 +63,40 @@ const statuses = Object.values(StackStatus);
       >{{ themeStore.isDark ? '昼间模式' : '夜间模式' }}</el-button>
     </header>
 
-    <main class="page-main">
-      <template v-if="isDefaultView">
-        <section class="page">
-          <h2>我的堆积</h2>
-          <p class="tip">堆积列表功能开发中，可查看自己购买的产品、按时间/状态筛选。</p>
-          <ul class="list">
-            <li v-for="s in statuses" :key="s" class="item">
-              <span class="label">堆积状态</span>
-              <code>{{ s }}</code>
-            </li>
-          </ul>
-        </section>
-      </template>
+    <div class="page-body">
+      <aside class="page-sidebar">
+        <el-menu class="page-nav" router :default-active="activePath">
+          <el-menu-item v-for="item in navItems" :key="item.path" :index="item.path">
+            <span class="nav-label">{{ item.label }}</span>
+            <span class="nav-en">{{ item.en }}</span>
+          </el-menu-item>
+        </el-menu>
+      </aside>
 
-      <!-- 子页面（stats / wip）由嵌套路由渲染 -->
-      <router-view v-else />
-    </main>
+      <main class="page-main">
+        <router-view />
+      </main>
+    </div>
 
-    <el-menu
-      class="page-nav"
-      mode="horizontal"
-      router
-      :default-active="activePath"
-      :ellipsis="false"
+    <el-drawer
+      v-model="drawerVisible"
+      class="mobile-nav-drawer"
+      direction="ltr"
+      size="200px"
+      :with-header="false"
     >
-      <el-menu-item v-for="item in navItems" :key="item.path" :index="item.path">
-        {{ item.label }}
-      </el-menu-item>
-    </el-menu>
+      <el-menu
+        class="drawer-nav"
+        router
+        :default-active="activePath"
+        @select="drawerVisible = false"
+      >
+        <el-menu-item v-for="item in navItems" :key="item.path" :index="item.path">
+          <span class="nav-label">{{ item.label }}</span>
+          <span class="nav-en">{{ item.en }}</span>
+        </el-menu-item>
+      </el-menu>
+    </el-drawer>
   </div>
 </template>
 
@@ -99,6 +118,12 @@ const statuses = Object.values(StackStatus);
   border-bottom: 1px solid var(--el-border-color-light, #eee);
 }
 
+.header-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .page-title {
   font-size: 18px;
 }
@@ -107,54 +132,64 @@ const statuses = Object.values(StackStatus);
   font-weight: 400;
 }
 
+.page-body {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+/* 移动端默认隐藏左侧导航，仅通过抽屉展示 */
+.page-sidebar {
+  display: none;
+}
+
+.drawer-nav {
+  width: 100%;
+  border-right: none;
+}
+
+.nav-en {
+  margin-left: 6px;
+  color: var(--app-text-secondary, #888);
+  font-size: 12px;
+}
+
 .page-main {
   flex: 1;
+  min-width: 0;
   padding: 12px;
 }
 
-/* 底部导航：横向 el-menu 平铺为底部标签栏 */
-.page-nav {
-  border-top: 1px solid var(--el-border-color-light, #eee);
-  border-bottom: none;
-}
+/* PC 端常驻左侧导航栏 */
+@media (min-width: 768px) {
+  .page-shell {
+    max-width: 960px;
+  }
 
-.page-nav :deep(.el-menu-item) {
-  flex: 1;
-  justify-content: center;
-  height: 48px;
-  line-height: 48px;
-}
+  .nav-toggle {
+    display: none;
+  }
 
-.page-nav :deep(.el-menu-item.is-active) {
-  border-bottom: none;
-  font-weight: 600;
-}
+  .page-sidebar {
+    display: block;
+    flex-shrink: 0;
+    width: 160px;
+    background: var(--app-surface-color, #fff);
+    border-right: 1px solid var(--el-border-color-light, #eee);
+  }
 
-.page h2 {
-  margin-bottom: 8px;
-}
+  .page-nav {
+    border-right: none;
+  }
 
-.tip {
-  margin-bottom: 12px;
-  color: var(--app-text-secondary, #888);
-  font-size: 13px;
+  .page-main {
+    padding: 20px 24px;
+  }
 }
+</style>
 
-.list {
-  list-style: none;
-}
-
-.item {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  margin-bottom: 8px;
-  background: var(--app-surface-color, #fff);
-  border-radius: 8px;
-  font-size: 14px;
-}
-
-.label {
-  color: var(--app-text-secondary, #888);
+<style>
+.mobile-nav-drawer .el-drawer__body {
+  padding: 0;
 }
 </style>
