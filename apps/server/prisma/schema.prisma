@@ -39,6 +39,7 @@ model Manufacturer {
   description String?
   logoUrl     String?
   status      String   @default("ACTIVE")
+  dataSource  String?
   reviewStatus String  @default("PENDING")
   reviewDate  DateTime?
   reviewerId  Int?
@@ -94,6 +95,9 @@ model Product {
   photos         String?
   tags           String?
   status         String       @default("ON_SALE")
+  dataSource     String?
+  manualsSource  String?
+  photosSource   String?
   reviewStatus   String       @default("PENDING")
   reviewDate     DateTime?
   reviewerId     Int?
@@ -200,6 +204,7 @@ model Article {
   manufacturers Manufacturer[]
   tags          String?
   status        String         @default("DRAFT")
+  dataSource    String?
   reviewStatus  String         @default("PENDING")
   reviewDate    DateTime?
   reviewerId    Int?

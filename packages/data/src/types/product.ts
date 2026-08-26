@@ -1,6 +1,6 @@
 import type { Material, ModelScale, ModelType, ProductKind, ProductStatus, ToolType } from '../enums/product';
 import type { ReviewStatus } from '../enums/common';
-import type { DateTimeString, Id, Image, ReviewFields, TimestampFields } from './common';
+import type { DataSource, DateTimeString, Id, Image, ReviewFields, TimestampFields } from './common';
 
 /** 产品（模型 / 工具辅料） */
 export interface Product extends TimestampFields, ReviewFields {
@@ -40,6 +40,12 @@ export interface Product extends TimestampFields, ReviewFields {
   /** 题材标签（用于关联竞品、检索） */
   tags: string[];
   status: ProductStatus;
+  /** 数据来源（格式：来源类型|备注） */
+  dataSource?: DataSource;
+  /** 说明书来源（格式：来源类型|备注，多个地址用半角逗号分隔） */
+  manualsSource?: DataSource;
+  /** 照片来源（格式：来源类型|备注，多个地址用半角逗号分隔） */
+  photosSource?: DataSource;
 }
 
 export interface ProductQuery {

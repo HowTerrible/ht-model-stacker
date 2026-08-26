@@ -22,3 +22,25 @@
 - 前端 localStorage 只存 JWT token;用户资料与权限仅存 Pinia 内存,启动时经 `/auth/me` 获取;
 - 服务端用 `@UseGuards(JwtAuthGuard, RolesGuard)` + `@Roles('权限码')` 做真实校验,
   权限每次请求从数据库实时读取,前端展示控制仅是体验优化。
+
+## 数据来源约定
+
+数据来源字段(`dataSource`/`manualsSource`/`photosSource`)采用字符串存储,格式为 `来源类型|备注`:
+
+- **来源类型**(`SourceType`枚举): `ORIGINAL`(原创) / `OFFICIAL`(官网) / `EXTERNAL`(外链);
+- **备注**: 官网和外链类型用于存放 URL;说明书/照片可能存在多个地址,使用**半角逗号**分隔;
+- **禁止**使用符号 `|` 作为 URL 内容的一部分。
+
+示例:
+- 原创: `ORIGINAL`
+- 官网: `OFFICIAL|https://example.com/product`
+- 外链(多图): `EXTERNAL|https://img1.com/a.jpg,https://img2.com/b.jpg`
+
+辅助函数位于 `packages/data/src/types/common.ts`:
+- `parseDataSource(value)` → `{ type, note }`
+- `buildDataSource(type, note?)` → `string`
+
+## 编码规范
+
+- **样式**: 使用 SCSS 编写，文件后缀 `.scss`。
+- **Vue 文件**: `<style>` 标签使用 `<style lang="scss" scoped>`，通过嵌套选择器缩短代码行数。

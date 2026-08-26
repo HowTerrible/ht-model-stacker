@@ -1,27 +1,38 @@
 <script setup lang="ts">
-// 资料库（DataBase）：检索品牌、产品、产品价格等内容，模块开发中
+import { ref } from "vue";
+import ManufacturerList from "./components/manufacturer-list.vue";
+import ProductList from "./components/product-list.vue";
+
+const activeTab = ref<"manufacturer" | "product">("manufacturer");
 </script>
 
 <template>
-  <section class="module-page">
-    <h2>资料库 <span class="en">DataBase</span></h2>
-    <p class="tip">用于检索品牌、产品、产品价格等内容，模块开发中。</p>
+  <section class="database-page">
+    <el-radio-group v-model="activeTab" size='large' class="tab-bar">
+      <el-radio-button value="manufacturer">品牌/厂商</el-radio-button>
+      <el-radio-button value="product">模型/辅料</el-radio-button>
+    </el-radio-group>
+
+    <KeepAlive>
+      <ManufacturerList v-if="activeTab === 'manufacturer'" />
+      <ProductList v-else />
+    </KeepAlive>
   </section>
 </template>
 
 <style scoped>
-.module-page h2 {
-  margin-bottom: 8px;
+.database-page {
+  display: flex;
+  flex-direction: column;
 }
 
-.en {
-  color: var(--app-text-secondary, #888);
-  font-size: 13px;
-  font-weight: 400;
+.tab-bar {
+  display: flex;
+  margin-bottom: 12px;
 }
 
-.tip {
-  color: var(--app-text-secondary, #888);
-  font-size: 13px;
+.tab-bar :deep(.el-radio-button__inner) {
+  flex: 1;
+  width: 100%;
 }
 </style>

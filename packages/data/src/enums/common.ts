@@ -15,3 +15,13 @@ export enum ReviewStatus {
   /** 审核拒绝 */
   REJECTED = 'REJECTED',
 }
+
+/** 数据来源类型 */
+export enum SourceType {
+  /** 原创 */
+  ORIGINAL = 'ORIGINAL',
+  /** 官网 */
+  OFFICIAL = 'OFFICIAL',
+  /** 外链 */
+  EXTERNAL = 'EXTERNAL',
+}
