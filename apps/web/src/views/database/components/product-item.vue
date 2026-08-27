@@ -41,6 +41,9 @@ function subTags(item: ProductItem): string[] {
   <!-- 通栏布局 -->
   <template v-if="viewMode === 'list'">
     <article class="db-card row" @click="$emit('click', item)">
+      <div class="cover-area">
+        <slot name="cover"></slot>
+      </div>
       <div class="row-info">
         <div class="card-head">
           <h4 class="name">{{ item.productName }}</h4>
@@ -116,6 +119,29 @@ function subTags(item: ProductItem): string[] {
   border-radius: 8px;
   cursor: pointer;
   transition: box-shadow 0.2s;
+}
+
+.cover-area {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  background: var(--el-fill-color-light, #f0f0f0);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.db-card.row .row-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .db-card:hover {

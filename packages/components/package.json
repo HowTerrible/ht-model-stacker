@@ -1,0 +1,38 @@
+{
+  "name": "@model-stacker/components",
+  "version": "0.1.0",
+  "description": "ModelStacker 公共 Vue 组件：表单字段组、详情展示、通用件",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./style.css": "./dist/index.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "typecheck": "vue-tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@model-stacker/data": "workspace:*",
+    "element-plus": "^2.14.3",
+    "vue": "^3.5.40"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "typescript": "^5.9.3",
+    "vite": "^8.2.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vue-tsc": "^3.3.9"
+  },
+  "license": "MIT"
+}

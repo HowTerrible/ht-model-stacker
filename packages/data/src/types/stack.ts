@@ -19,6 +19,8 @@ export interface Stack extends TimestampFields {
   stage?: WipStage;
   /** 关联的烂尾记录 ID（该堆积烂尾后对应 Wip） */
   wipId?: Id;
+  /** 堆积位置 */
+  location?: string;
   notes?: string;
 }
 

@@ -19,6 +19,9 @@ defineEmits<{ click: [item: ManufacturerItem] }>();
 
 <template>
   <article class="mfr-card row" @click="$emit('click', item)">
+    <div class="logo-area">
+      <slot name="logo"></slot>
+    </div>
     <div class="row-info">
       <div class="card-head">
         <h4 class="name">{{ item.name }}</h4>
@@ -52,6 +55,35 @@ defineEmits<{ click: [item: ManufacturerItem] }>();
   border-radius: 8px;
   cursor: pointer;
   transition: box-shadow 0.2s;
+}
+
+.mfr-card.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-area {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  background: var(--el-fill-color-light, #f0f0f0);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-area img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.row-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .mfr-card:hover {

@@ -148,6 +148,7 @@ model Stack {
   channel       String?
   status        String   @default("UNSTARTED")
   stage         String?
+  location      String?
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

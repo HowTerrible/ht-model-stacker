@@ -11,6 +11,7 @@
     "typecheck": "vue-tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@model-stacker/components": "workspace:*",
     "@model-stacker/data": "workspace:*",
     "element-plus": "^2.14.3",
     "pinia": "^4.0.2",

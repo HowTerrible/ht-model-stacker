@@ -10,6 +10,7 @@ export default defineConfig({
       // @model-stacker/data 产物为 CommonJS，dev 下浏览器按 ESM 导入会缺少命名导出，
       // 直接指向源码以 ESM 形式编译加载
       '@model-stacker/data': fileURLToPath(new URL('../../packages/data/src/index.ts', import.meta.url)),
+      '@model-stacker/components': fileURLToPath(new URL('../../packages/components/src/index.ts', import.meta.url)),
     },
   },
   server: {
