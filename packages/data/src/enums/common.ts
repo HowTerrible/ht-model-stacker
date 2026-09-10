@@ -1,3 +1,9 @@
+/** 通用权限码（存储于 User.permissions 的 JSON 数组中） */
+export enum Permission {
+  /** 管理员：可审核提交、管理资料库 */
+  ADMIN = 'ADMIN',
+}
+
 /** 通用启用状态 */
 export enum CommonStatus {
   /** 启用 */

@@ -45,6 +45,12 @@ const router = createRouter({
               component: () => import('@/views/my/statistics/index.vue'),
               meta: { requiresAuth: true },
             },
+            {
+              path: 'submissions',
+              name: 'my-submissions',
+              component: () => import('@/views/my/submissions/index.vue'),
+              meta: { requiresAuth: true },
+            },
           ],
         },
         {

@@ -4,7 +4,18 @@
 
 ## 项目概览
 
-ModelStacker（堆积人）是面向「堆积人」的产品管理与统计工具：管理已购买的比例模型 / 工具辅料，查询厂家、产品详情、价格走向与历史最低价，记录堆积与烂尾。
+ModelStacker（堆积人）是面向「堆积人」的物品管理与统计工具：管理已购买的所有物品（不限于比例模型 / 工具辅料，可包含日用品、五金等），查询厂家、产品详情、价格走向与历史最低价，记录堆积与烂尾。堆积记录与共享资料库**不强绑定**，可通过「资料补充申请」事后补全产品 / 厂家资料。
+
+## 堆积与资料库解耦（数据关系）
+
+**堆积（Stack）是用户私有记录，资料库（Product / Manufacturer）是共享数据，两者不强绑定：**
+
+- **已关联**：资料库有对应产品时，堆积通过 `productId` 关联（可选 `manufacturerId` / `categoryId`），产品名、厂家名等展示数据取自资料库；
+- **未关联**：资料库无对应产品时，堆积直接保存自由文本 `itemName` / `manufacturerName` 即可，不要求先通过产品 / 厂家审核；
+- **一键补库**：堆积可发起「资料补充申请」（`DataSupplementRequest`，含来源 `stackId`、申请 `type`、`name` / `manufacturerName` 等）；管理员审核建库后回填 `linkedProductId` / `linkedManufacturerId`，并**自动绑定到申请来源的堆积**；
+- **产品分类**：原「题材」改称「产品分类」，英文 / code 继续使用 `theme`（`Theme`、`themeId` 等不变），树形结构同时用于分类产品与堆积物品（含日用品、五金等）。
+
+**术语对照：** 堆积 Stack / 资料库 Database / 资料补充申请 DataSupplementRequest / 产品分类 Theme（原题材） / 烂尾 Wip（定义不变）。
 
 ## 技术框架
 
@@ -49,8 +60,8 @@ ModelStacker/
 
 | 模块 | 职责 | 关键文件/目录 |
 | ---- | ---- | ------------- |
-| `apps/web` | 用户端：查看资料库、提交新资料审核、管理堆积/烂尾、个人统计 | `views/database/`（厂商/产品浏览）、`views/my/`（堆积管理） |
-| `apps/admin` | 后台管理：对厂商、产品进行增删改查、审核操作 | `views/manufacturer/`、`views/product/`、`views/price/` |
+| `apps/web` | 用户端：查看资料库、发起资料补充申请（补库）、管理堆积/烂尾、个人统计 | `views/database/`（厂商/产品浏览）、`views/my/`（堆积管理） |
+| `apps/admin` | 后台管理：对厂商、产品进行增删改查、审核资料补充申请 | `views/manufacturer/`、`views/product/`、`views/price/` |
 | `apps/server` | 提供 RESTful API，处理鉴权、业务逻辑、数据库交互 | `src/auth/`（鉴权）、`prisma/schema.prisma`（数据模型） |
 | `packages/data` | 枚举与 TypeScript 类型定义，前后端强制一致 | `src/enums/`、`src/types/` |
 | `packages/components` | 共享 Vue 组件：表单字段组、详情展示、选项映射 | `src/options/`、`src/manufacturer/`、`src/product/`、`src/common/` |

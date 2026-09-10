@@ -11,6 +11,11 @@ const router = createRouter({
       component: () => import('@/views/manufacturer/index.vue'),
     },
     { path: '/price', name: 'price', component: () => import('@/views/price/index.vue') },
+    {
+      path: '/submission',
+      name: 'submission',
+      component: () => import('@/views/submission/index.vue'),
+    },
   ],
 });
 

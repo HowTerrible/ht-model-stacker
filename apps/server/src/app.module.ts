@@ -6,9 +6,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TransformInterceptor } from './common/transform.interceptor';
 import { PrismaModule } from './prisma/prisma.module';
+import { SubmissionModule } from './submission/submission.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SubmissionModule],
   controllers: [AppController],
   providers: [AppService, { provide: APP_INTERCEPTOR, useClass: TransformInterceptor }],
 })

@@ -2,15 +2,17 @@ import type { CommonStatus } from '../enums/common';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
 /**
- * 题材节点（树形结构，用于详细分类产品，也可用于工具辅料）。
+ * 产品分类节点（原题材，code 仍用 theme），树形结构，用于详细分类
+ * 产品及堆积物品，覆盖比例模型、工具辅料，也可包含日用品、五金等。
  *
  * 示例：
  *   虎式坦克E型 -> 军事 -> 二战 -> 坦克 -> 重型坦克 -> 虎式
  *   法拉利 250GT -> 民用 -> 60年代 -> 法拉利
  *   双刃钳 -> 工具 -> 剪钳 -> 水口钳 -> 双刃钳
+ *   螺丝刀 -> 五金 -> 手工具
  *
  * 分级规则（借鉴生物学「界门纲目科属种」的命名思路，但不强制固定层数）：
- *   1. 根层固定、枚举维护：「模型 / 工具辅料」两级固定，保证导航一致性；
+ *   1. 根层固定、枚举维护：根层分类固定，保证导航一致性；
  *      往下允许 1~N 层，建议封顶 5~6 层。
  *   2. 同级同维度：同一父节点的所有子节点必须是同一分类属性，
  *      如「坦克」下只能都是坦克类型（重型/中型/轻坦），不能混入时代维度。
@@ -21,7 +23,7 @@ import type { DateTimeString, Id, TimestampFields } from './common';
  *   6. 已有产品关联的节点禁止直接删除。
  *
  * 生物学名词参考映射（仅作层级命名约定，不强制层数）：
- *   界/Kingdom -> 根：模型 / 工具辅料
+ *   界/Kingdom -> 根分类：模型 / 工具辅料 / 日用品 / 五金 …
  *   门/Phylum -> 军事 / 民用 / 手办 / 战旗；工具 / 辅料
  *   纲/Class  -> 二战 / 60年代；剪钳
  *   目/Order  -> 坦克 / 法拉利；水口钳
@@ -49,7 +51,7 @@ export interface Theme extends TimestampFields {
   children?: Theme[];
 }
 
-/** 题材查询参数 */
+/** 产品分类查询参数 */
 export interface ThemeQuery {
   /** 父节点 ID；null 表示查询顶层；不传表示整棵树 */
   parentId?: Id | null;
@@ -71,7 +73,7 @@ export interface ThemePathNode {
 }
 
 /**
- * 题材全路径，如：
+ * 产品分类全路径，如：
  *   [{ 军事 }, { 二战 }, { 坦克 }, { 重型坦克 }, { 虎式 }]
  */
 export type ThemePath = ThemePathNode[];

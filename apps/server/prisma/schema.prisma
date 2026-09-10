@@ -26,6 +26,7 @@ model User {
   updatedAt   DateTime @updatedAt
   stacks      Stack[]
   wips        Wip[]
+  supplementRequests DataSupplementRequest[]
 
   @@map("user")
 }
@@ -48,6 +49,7 @@ model Manufacturer {
   updatedAt   DateTime @updatedAt
   products    Product[]
   articles    Article[]
+  stacks      Stack[]
 
   @@index([name])
   @@map("manufacturer")
@@ -66,6 +68,7 @@ model Theme {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   products  Product[]
+  stacks    Stack[]
 
   @@index([parentId])
   @@index([name])
@@ -134,12 +137,99 @@ model PriceRecord {
   @@map("price_record")
 }
 
+// 用户提交的厂家资料（方案B：独立的「提交箱」，审核通过后合并进 Manufacturer）
+// 与 DataSupplementRequest（堆积一键补库申请）不同：这里提交完整厂家资料条目。
+model ManufacturerSubmission {
+  id          Int      @id @default(autoincrement())
+  // 提交人 ID（无 Prisma 反向关系，查询提交数据时直接按 userId 过滤）
+  userId      Int
+  name        String
+  fullName    String?
+  country     String?
+  website     String?
+  description String?
+  logoUrl     String?
+  dataSource  String?
+  // 提交人补充说明
+  note        String?
+  reviewStatus String  @default("PENDING")
+  reviewDate  DateTime?
+  reviewerId  Int?
+  reviewNote  String?
+  // 审核通过并建库后回填：关联的正式厂家 ID
+  linkedManufacturerId Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, reviewStatus])
+  @@index([reviewStatus])
+  @@index([linkedManufacturerId])
+  @@map("manufacturer_submission")
+}
+
+// 用户提交的产品资料（方案B：独立的「提交箱」，审核通过后合并进 Product）
+// 提交产品不强制关联已有厂家：有则填 manufacturerId，没有可填 manufacturerName 自由文本，
+// 审核建库 / 建厂家后回填关联（与堆积-资料库解耦口径一致）。
+model ProductSubmission {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  // 关联的已有厂家 ID（可选，不强绑定）
+  manufacturerId Int?
+  // 厂家名（未关联已有厂家时填写，作为厂家匹配/新建依据）
+  manufacturerName String?
+  themeId        Int?
+  name           String
+  officialName   String?
+  modelNo        String?
+  kind           String   @default("MODEL")
+  modelTypes     String?
+  material       String?
+  accessoryMaterials String?
+  toolType       String?
+  scale          String?
+  year           Int?
+  releaseDate    DateTime?
+  description    String?
+  manuals        String?
+  photos         String?
+  tags           String?
+  dataSource     String?
+  manualsSource  String?
+  photosSource   String?
+  note           String?
+  reviewStatus   String   @default("PENDING")
+  reviewDate     DateTime?
+  reviewerId     Int?
+  reviewNote     String?
+  // 审核通过并建库后回填：关联的正式产品 / 厂家 ID
+  linkedProductId      Int?
+  linkedManufacturerId Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, reviewStatus])
+  @@index([reviewStatus])
+  @@index([manufacturerId])
+  @@index([themeId])
+  @@index([linkedProductId])
+  @@map("product_submission")
+}
+
 model Stack {
   id            Int      @id @default(autoincrement())
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        Int
-  product       Product  @relation(fields: [productId], references: [id])
-  productId     Int
+  // 与资料库的关联（不强绑定，均可选）
+  // - 资料库有对应产品则关联 product；没有则用 itemName / manufacturerName 自由填写，
+  //   并可通过 DataSupplementRequest 一键申请补充资料，审核建库后自动回填绑定。
+  product       Product?        @relation(fields: [productId], references: [id], onDelete: SetNull)
+  productId     Int?
+  manufacturer  Manufacturer?   @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
+  manufacturerId Int?
+  category      Theme?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  categoryId    Int?
+  itemName      String?
+  manufacturerName String?
   wip           Wip?     @relation(fields: [wipId], references: [id], onDelete: SetNull)
   wipId         Int?
   purchasedAt   DateTime @default(now())
@@ -152,11 +242,39 @@ model Stack {
   notes         String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  supplementRequests DataSupplementRequest[]
 
   @@index([userId, purchasedAt])
   @@index([productId])
+  @@index([manufacturerId])
+  @@index([categoryId])
   @@index([wipId])
   @@map("stack")
+}
+
+model DataSupplementRequest {
+  id                   Int      @id @default(autoincrement())
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               Int
+  stack                Stack    @relation(fields: [stackId], references: [id], onDelete: Cascade)
+  stackId              Int
+  type                 String   @default("PRODUCT")
+  name                 String
+  manufacturerName     String?
+  note                 String?
+  reviewStatus         String   @default("PENDING")
+  reviewDate           DateTime?
+  reviewerId           Int?
+  reviewNote           String?
+  linkedProductId      Int?
+  linkedManufacturerId Int?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@index([userId, reviewStatus])
+  @@index([stackId])
+  @@index([linkedProductId])
+  @@map("data_supplement_request")
 }
 
 model Wip {

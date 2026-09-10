@@ -19,6 +19,7 @@ const activePath = computed(() => route.path);
       <el-menu-item index="/my">个人主页</el-menu-item>
       <el-menu-item index="/my/my-stack">我的堆积</el-menu-item>
       <el-menu-item index="/my/statistics">详细统计</el-menu-item>
+      <el-menu-item index="/my/submissions">资料提交</el-menu-item>
     </el-menu>
 
     <router-view />

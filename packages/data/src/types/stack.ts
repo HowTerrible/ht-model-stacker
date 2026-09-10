@@ -3,13 +3,32 @@ import type { PurchaseChannel, StackStatus } from '../enums/stack';
 import type { WipStage } from '../enums/wip';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
-/** 堆积记录（已购买的模型 / 工具辅料） */
+/**
+ * 堆积记录：已购买的物品，不限于模型、工具，
+ * 可包含各种日用品、五金等内容。
+ *
+ * 堆积与资料库不强绑定：
+ * - 资料库中有对应产品时，通过 productId 建立关联；
+ * - 资料库中没有时，直接填写 itemName / manufacturerName 等自由信息，
+ *   并可创建 DataSupplementRequest 一键申请补充资料，审核建库后自动回填绑定。
+ */
 export interface Stack extends TimestampFields {
   id: Id;
   userId: Id;
-  productId: Id;
+  /** 关联的资料库产品 ID（不强绑定；资料库无对应产品时留空） */
+  productId?: Id;
+  /** 关联的资料库厂家 ID（不强绑定；不关联产品时可单独选厂家） */
+  manufacturerId?: Id;
+  /** 所属产品分类 ID（可选，关联 Theme 节点） */
+  categoryId?: Id;
+  /** 品名（未关联资料库产品时填写；已关联时可留空） */
+  itemName?: string;
+  /** 厂家 / 品牌名（未关联资料库厂家时填写） */
+  manufacturerName?: string;
+  /** 货号 / 型号（不强绑定；不关联产品时可直接输入） */
+  modelNo?: string;
   /** 购买时间 */
-  purchasedAt: DateTimeString;
+  purchasedAt?: DateTimeString;
   /** 购买价格 */
   purchasePrice?: number;
   currency: Currency;
@@ -31,6 +50,8 @@ export interface StackQuery {
   stage?: WipStage;
   /** 是否只查已关联烂尾的堆积 */
   onlyWithWip?: boolean;
+  /** 是否只查已关联资料库产品的堆积 */
+  onlyWithProduct?: boolean;
   /** 按购买时间过滤 */
   startDate?: string;
   endDate?: string;

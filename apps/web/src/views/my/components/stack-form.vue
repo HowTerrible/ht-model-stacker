@@ -9,12 +9,14 @@ import {
   deleteStack,
   saveStack,
   searchManufacturers,
+  searchProducts,
   type ManufacturerOption,
+  type ProductOption,
 } from "@/api/stack";
 
 const props = defineProps<{
   modelValue: boolean;
-  /** 堆积记录 ID，传入则进入编辑模式（厂家 / 产品名称 / 货号不可修改） */
+  /** 堆积记录 ID，传入则进入编辑模式（厂家 / 产品 / 货号不可修改） */
   stackId?: Id;
 }>();
 
@@ -38,7 +40,7 @@ const formRef = ref<FormInstance>();
 
 interface StackFormModel {
   manufacturer: number | string;
-  productName: string;
+  product: number | string;
   modelNo: string;
   purchasedAt: string;
   purchasePrice?: number;
@@ -51,7 +53,7 @@ interface StackFormModel {
 
 const createEmptyForm = (): StackFormModel => ({
   manufacturer: "",
-  productName: "",
+  product: "",
   modelNo: "",
   purchasedAt: "",
   purchasePrice: undefined,
@@ -68,11 +70,7 @@ const rules: FormRules = {
   manufacturer: [
     { required: true, message: "请选择或输入厂家", trigger: "change" },
   ],
-  productName: [{ required: true, message: "请输入产品名称", trigger: "blur" }],
-  modelNo: [{ required: true, message: "请输入货号", trigger: "blur" }],
-  purchasedAt: [
-    { required: true, message: "请选择购买时间", trigger: "change" },
-  ],
+  product: [{ required: true, message: "请选择或输入产品", trigger: "change" }],
 };
 
 /* ---------- 厂家远程搜索 ---------- */
@@ -88,6 +86,19 @@ async function handleManufacturerSearch(query: string) {
   }
 }
 
+/* ---------- 产品远程搜索 ---------- */
+const productLoading = ref(false);
+const productOptions = ref<ProductOption[]>([]);
+
+async function handleProductSearch(query: string) {
+  productLoading.value = true;
+  try {
+    productOptions.value = await searchProducts(query);
+  } finally {
+    productLoading.value = false;
+  }
+}
+
 watch(
   () => props.modelValue,
   (opened) => {
@@ -95,9 +106,9 @@ watch(
     Object.assign(form, createEmptyForm());
     if (props.stackId != null) {
       // TODO 编辑模式：根据 props.stackId 获取既有堆积数据回填
-      // 厂家 / 产品名称 / 货号此时应回填原值且不可修改
+      // 厂家 / 产品 / 货号此时应回填原值且不可修改
       form.manufacturer = 1;
-      form.productName = "示例产品";
+      form.product = 1;
       form.modelNo = "MOCK-001";
     }
   },
@@ -109,7 +120,7 @@ async function handleSave() {
 
   console.log({
     manufacturer: form.manufacturer,
-    productName: form.productName,
+    product: form.product,
     modelNo: form.modelNo,
     purchasedAt: form.purchasedAt,
     purchasePrice: form.purchasePrice,
@@ -123,7 +134,7 @@ async function handleSave() {
   await saveStack(
     {
       manufacturer: form.manufacturer,
-      productName: form.productName,
+      product: form.product,
       modelNo: form.modelNo,
       purchasedAt: form.purchasedAt,
       purchasePrice: form.purchasePrice,
@@ -148,7 +159,7 @@ async function handleSaveAndNext() {
 
   await saveStack({
     manufacturer: form.manufacturer,
-    productName: form.productName,
+    product: form.product,
     modelNo: form.modelNo,
     purchasedAt: form.purchasedAt,
     purchasePrice: form.purchasePrice,
@@ -216,26 +227,44 @@ async function handleDelete() {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="产品" prop="productName">
-        <el-input
-          v-model="form.productName"
+      <el-form-item label="产品" prop="product">
+        <el-select
+          v-model="form.product"
+          filterable
+          remote
+          allow-create
+          default-first-option
+          reserve-keyword
+          :remote-method="handleProductSearch"
+          :loading="productLoading"
           :disabled="isEdit"
-          placeholder="产品名称"
-        />
+          placeholder="产品，可直接输入按回车新增"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="opt in productOptions"
+            :key="opt.id ?? opt.name"
+            :label="opt.name"
+            :value="opt.id ?? opt.name"
+          />
+          <template #empty>
+            <span>未搜索到结果，可按回车直接新增</span>
+          </template>
+        </el-select>
       </el-form-item>
-      <el-form-item label="货号" prop="modelNo">
+      <el-form-item label="货号">
         <el-input
           v-model="form.modelNo"
           :disabled="isEdit"
-          placeholder="请输入货号"
+          placeholder="选填，如：14308"
         />
       </el-form-item>
-      <el-form-item label="购买时间" prop="purchasedAt">
+      <el-form-item label="购买时间">
         <el-date-picker
           v-model="form.purchasedAt"
           type="date"
           value-format="YYYY-MM-DD"
-          placeholder="选择购买时间"
+          placeholder="选填"
           style="width: 100%"
         />
       </el-form-item>

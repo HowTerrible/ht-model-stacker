@@ -26,10 +26,13 @@ export const channelOptions: SelectOption<PurchaseChannel>[] = [
 ];
 
 export const statusOptions: SelectOption<StackStatus>[] = [
-  { value: StackStatus.UNSTARTED, label: '未开工（堆积中）' },
+  { value: StackStatus.UNSTARTED, label: '未开封（堆积中）' },
+  { value: StackStatus.OPENED, label: '已开封' },
   { value: StackStatus.IN_PROGRESS, label: '制作中' },
   { value: StackStatus.FINISHED, label: '已完成' },
   { value: StackStatus.WIP, label: '烂尾' },
+  { value: StackStatus.USED_UP, label: '已用完' },
+  { value: StackStatus.EXPIRED, label: '已过期' },
   { value: StackStatus.SOLD, label: '已出 / 转让' },
 ];
 
@@ -64,10 +67,13 @@ export const channelLabels: Record<PurchaseChannel, string> = {
 };
 
 export const statusLabels: Record<StackStatus, string> = {
-  [StackStatus.UNSTARTED]: '未开工',
+  [StackStatus.UNSTARTED]: '未开封',
+  [StackStatus.OPENED]: '已开封',
   [StackStatus.IN_PROGRESS]: '制作中',
   [StackStatus.FINISHED]: '已完成',
   [StackStatus.WIP]: '烂尾',
+  [StackStatus.USED_UP]: '已用完',
+  [StackStatus.EXPIRED]: '已过期',
   [StackStatus.SOLD]: '已出 / 转让',
 };
 
@@ -75,9 +81,12 @@ type TagType = 'primary' | 'success' | 'warning' | 'danger' | 'info';
 
 export const statusTagTypes: Record<StackStatus, TagType> = {
   [StackStatus.UNSTARTED]: 'warning',
+  [StackStatus.OPENED]: 'primary',
   [StackStatus.IN_PROGRESS]: 'primary',
   [StackStatus.FINISHED]: 'success',
   [StackStatus.WIP]: 'danger',
+  [StackStatus.USED_UP]: 'info',
+  [StackStatus.EXPIRED]: 'info',
   [StackStatus.SOLD]: 'info',
 };
 

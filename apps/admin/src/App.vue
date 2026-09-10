@@ -7,6 +7,7 @@
         <el-menu-item index="/product">产品管理</el-menu-item>
         <el-menu-item index="/manufacturer">厂家管理</el-menu-item>
         <el-menu-item index="/price">价格走势</el-menu-item>
+        <el-menu-item index="/submission">提交审核</el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
