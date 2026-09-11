@@ -1,5 +1,5 @@
-/** 堆积（已购买物品）状态 */
-export enum StackStatus {
+﻿/** 堆积（已购买物品）状态 */
+export enum StackStatusEnum {
   /** 未开封（堆积中） */
   UNSTARTED = 'UNSTARTED',
   /** 已开封 */
@@ -19,7 +19,7 @@ export enum StackStatus {
 }
 
 /** 购买渠道 */
-export enum PurchaseChannel {
+export enum PurchaseChannelEnum {
   /** 淘宝 */
   TAOBAO = 'TAOBAO',
   /** 京东 */

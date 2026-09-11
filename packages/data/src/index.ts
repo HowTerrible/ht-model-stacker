@@ -1,4 +1,5 @@
 export * from './enums/article';
+export * from './labels';
 export * from './enums/common';
 export * from './enums/price';
 export * from './enums/product';

@@ -1,7 +1,7 @@
-import type {
+﻿import type {
   ManufacturerSubmission,
   ProductSubmission,
-  ReviewStatus,
+  ReviewStatusEnum,
 } from '@model-stacker/data';
 import { request } from './client';
 
@@ -11,7 +11,7 @@ interface PageResult<T> {
 }
 
 interface AdminPageQuery {
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   kind?: string;
   keyword?: string;
   page?: number;

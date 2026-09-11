@@ -1,6 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue';
-import { SourceType } from '@model-stacker/data';
+import { SourceTypeEnum } from '@model-stacker/data';
 import { parseDataSource } from '@model-stacker/data';
 import { sourceTypeLabels } from '../options';
 
@@ -14,11 +14,11 @@ const typeLabel = computed(() =>
 
 const tagType = computed(() => {
   switch (parsed.value.type) {
-    case SourceType.ORIGINAL:
+    case SourceTypeEnum.ORIGINAL:
       return 'success' as const;
-    case SourceType.OFFICIAL:
+    case SourceTypeEnum.OFFICIAL:
       return 'primary' as const;
-    case SourceType.EXTERNAL:
+    case SourceTypeEnum.EXTERNAL:
       return 'info' as const;
     default:
       return 'info' as const;

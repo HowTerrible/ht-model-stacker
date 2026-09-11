@@ -1,8 +1,8 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { reviewStatusLabels, reviewStatusTagTypes } from '@model-stacker/components';
-import { ReviewStatus } from '@model-stacker/data';
+import { ReviewStatusEnum } from '@model-stacker/data';
 import type { ManufacturerSubmission, ProductSubmission } from '@model-stacker/data';
 import {
   approveManufacturerSubmission,
@@ -23,16 +23,16 @@ const pdLoading = ref(false);
 const pdItems = ref<ProductSubmission[]>([]);
 const pdTotal = ref(0);
 
-const STATUS_FILTERS: Array<{ value: ReviewStatus | undefined; label: string }> = [
-  { value: ReviewStatus.PENDING, label: '待审核' },
-  { value: ReviewStatus.APPROVED, label: '已通过' },
-  { value: ReviewStatus.REJECTED, label: '已拒绝' },
+const STATUS_FILTERS: Array<{ value: ReviewStatusEnum | undefined; label: string }> = [
+  { value: ReviewStatusEnum.PENDING, label: '待审核' },
+  { value: ReviewStatusEnum.APPROVED, label: '已通过' },
+  { value: ReviewStatusEnum.REJECTED, label: '已拒绝' },
   { value: undefined, label: '全部' },
 ];
 
-const filter = reactive<{ mf: ReviewStatus | undefined; pd: ReviewStatus | undefined }>({
-  mf: ReviewStatus.PENDING,
-  pd: ReviewStatus.PENDING,
+const filter = reactive<{ mf: ReviewStatusEnum | undefined; pd: ReviewStatusEnum | undefined }>({
+  mf: ReviewStatusEnum.PENDING,
+  pd: ReviewStatusEnum.PENDING,
 });
 
 async function loadManufacturers() {
@@ -157,8 +157,8 @@ async function rejectPd(id: number) {
           <el-table-column prop="country" label="国家" width="90" />
           <el-table-column label="状态" width="100">
             <template #default="{ row }">
-              <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatus]" size="small">
-                {{ reviewStatusLabels[row.reviewStatus as ReviewStatus] }}
+              <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatusEnum]" size="small">
+                {{ reviewStatusLabels[row.reviewStatus as ReviewStatusEnum] }}
               </el-tag>
             </template>
           </el-table-column>
@@ -204,8 +204,8 @@ async function rejectPd(id: number) {
           <el-table-column prop="kind" label="种类" width="90" />
           <el-table-column label="状态" width="100">
             <template #default="{ row }">
-              <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatus]" size="small">
-                {{ reviewStatusLabels[row.reviewStatus as ReviewStatus] }}
+              <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatusEnum]" size="small">
+                {{ reviewStatusLabels[row.reviewStatus as ReviewStatusEnum] }}
               </el-tag>
             </template>
           </el-table-column>

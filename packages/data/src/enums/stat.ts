@@ -1,5 +1,5 @@
-/** 统计时间粒度 */
-export enum TimeGranularity {
+﻿/** 统计时间粒度 */
+export enum TimeGranularityEnum {
   /** 按月 */
   MONTH = 'MONTH',
   /** 按季度 */

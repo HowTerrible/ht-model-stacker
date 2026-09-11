@@ -1,5 +1,5 @@
-import type { ReviewStatus } from '../enums/common';
-import type { Material, ModelScale, ModelType, ProductKind, ToolType } from '../enums/product';
+﻿import type { ReviewStatusEnum } from '../enums/common';
+import type { MaterialEnum, ModelScaleEnum, ModelTypeEnum, ProductKindEnum, ToolTypeEnum } from '../enums/product';
 import type { DataSource, DateTimeString, Id, ReviewFields, TimestampFields } from './common';
 
 /**
@@ -37,7 +37,7 @@ export interface ManufacturerSubmission extends TimestampFields, ReviewFields {
 export interface ManufacturerSubmissionQuery {
   /** 提交人 */
   userId?: Id;
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   /** 按名称 / 简介模糊搜索 */
   keyword?: string;
   page?: number;
@@ -75,17 +75,17 @@ export interface ProductSubmission extends TimestampFields, ReviewFields {
   /** 货号 / 型号 */
   modelNo?: string;
   /** 种类：模型 / 工具辅料 */
-  kind: ProductKind;
+  kind: ProductKindEnum;
   /** 模型子类（可多选） */
-  modelTypes: ModelType[];
+  modelTypes: ModelTypeEnum[];
   /** 工具辅料子类 */
-  toolType?: ToolType;
+  toolType?: ToolTypeEnum;
   /** 主体材质 */
-  material?: Material;
+  material?: MaterialEnum;
   /** 配件（材质枚举数组） */
-  accessoryMaterials: Material[];
+  accessoryMaterials: MaterialEnum[];
   /** 比例 */
-  scale?: ModelScale | string;
+  scale?: ModelScaleEnum | string;
   /** 发售年份 */
   year?: number;
   /** 发售日期 */
@@ -113,9 +113,9 @@ export interface ProductSubmission extends TimestampFields, ReviewFields {
 export interface ProductSubmissionQuery {
   /** 提交人 */
   userId?: Id;
-  kind?: ProductKind;
+  kind?: ProductKindEnum;
   manufacturerId?: Id;
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   /** 按名称 / 备注模糊搜索 */
   keyword?: string;
   page?: number;

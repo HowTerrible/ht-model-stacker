@@ -105,9 +105,33 @@ packages\data\src\types\stack.ts中的stack类增加字符串字段“堆积位�
 资料库：产品、厂家的数据，包含产品的历史价格、竞品关联等内容。
 题材：定义改为产品分类，英文继续使用theme
 烂尾：定义不变
-
 项目设计思路调整：
 现在：堆积和资料库强绑定, 用户添加堆积需要同时提交产品、厂家的审核，复杂且不合理。
 改为：堆积和资料库不强绑定，如果资料库中有，可以建立关联关系；如果资料库中没有，用户可以一键提交补充资料的申请。资料添加后自动和申请来源的堆积绑定。
-
 调整packages\data\src\types中的数据结构及数据库定义、README.md中的描述。修改后的结论更新到AGENTS.md中。
+
+考虑重构系统中的枚举：
+1. 将键改为中文，值改为数字（从1开始）的形式。这样页面上获取label可以直接使用SampleEnum[value]的形式。
+  例如：packages\data\src\enums\article.ts中的ArticleType改写成
+  /** 文章类型 */
+  export enum ArticleTypeEnum {
+    产品趣闻 = 1,
+    参考文献 = 2,
+    小技巧 = 3,
+  }
+  页面或者表格使用时可直接写成 ArticleTypeEnum[item.type]
+2. 调整packages\components\src\options\index.ts中的选项，编写公共方法，将枚举转换成选项。（参考D:\工具\ht\cloudapp\src\utils\types.ts中的NumEnumToOptions和EnumToOptions（这两个方法编写时间较早，技术较为粗糙，仅作举例））
+分析以上方案和现有的写法有什么优劣
+
+再考虑一种改动方案，即将上述两种结合一下，值保持现在的英文单词的形式，键改为中文，即例如：packages\data\src\enums\article.ts中的ArticleType改写成
+  /** 文章类型 */
+  export enum ArticleTypeEnum {
+    产品趣闻 = 'DRAFT',
+    参考文献 = 'PUBLISHED',
+    小技巧 = 'ARCHIVED',
+  }
+  需要取label时可以：
+  1. 编写公共方法实时获取
+  2. 提前使用公共方法将枚举中的键值反转供页面使用
+  你提到的颜色映射、不能当键的枚举再考虑其他方案。
+或者你有什么建议能够解决掉 现状写法 中的劣势吗

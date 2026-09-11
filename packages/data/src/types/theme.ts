@@ -1,4 +1,4 @@
-import type { CommonStatus } from '../enums/common';
+﻿import type { CommonStatusEnum } from '../enums/common';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
 /**
@@ -46,7 +46,7 @@ export interface Theme extends TimestampFields {
   path: string;
   /** 同级排序号 */
   sortOrder: number;
-  status: CommonStatus;
+  status: CommonStatusEnum;
   /** 子节点（查询携带 withChildren 时返回） */
   children?: Theme[];
 }
@@ -59,7 +59,7 @@ export interface ThemeQuery {
   withChildren?: boolean;
   /** 按名称模糊搜索 */
   keyword?: string;
-  status?: CommonStatus;
+  status?: CommonStatusEnum;
   /** 按深度过滤 */
   level?: number;
   /** 按物化路径前缀过滤（查某节点整棵子树） */

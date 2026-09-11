@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
@@ -9,8 +9,8 @@ import {
   modelTypeOptions,
   toolTypeOptions,
 } from '@model-stacker/components';
-import { ProductKind, SourceType } from '@model-stacker/data';
-import type { Material, ModelScale, ModelType, ToolType } from '@model-stacker/data';
+import { ProductKindEnum, SourceTypeEnum } from '@model-stacker/data';
+import type { MaterialEnum, ModelScaleEnum, ModelTypeEnum, ToolTypeEnum } from '@model-stacker/data';
 import { submitProduct } from '@/api/submission';
 
 const props = defineProps<{ modelValue: boolean }>();
@@ -30,14 +30,14 @@ interface Form {
   name: string;
   officialName?: string;
   modelNo?: string;
-  kind: ProductKind;
-  modelTypes: ModelType[];
-  toolType?: ToolType;
-  material?: Material;
-  scale?: ModelScale | string;
+  kind: ProductKindEnum;
+  modelTypes: ModelTypeEnum[];
+  toolType?: ToolTypeEnum;
+  material?: MaterialEnum;
+  scale?: ModelScaleEnum | string;
   description?: string;
   manufacturerName?: string;
-  dataSourceType: SourceType | undefined;
+  dataSourceType: SourceTypeEnum | undefined;
   dataSourceNote: string;
   note?: string;
 }
@@ -46,7 +46,7 @@ const form = reactive<Form>({
   name: '',
   officialName: '',
   modelNo: '',
-  kind: ProductKind.MODEL,
+  kind: ProductKindEnum.MODEL,
   modelTypes: [],
   toolType: undefined,
   material: undefined,
@@ -62,7 +62,7 @@ const rules: FormRules = {
   name: [{ required: true, message: '请输入产品名称', trigger: 'blur' }],
 };
 
-const isModel = computed(() => form.kind === ProductKind.MODEL);
+const isModel = computed(() => form.kind === ProductKindEnum.MODEL);
 
 function buildDataSource(formValue: Form): string | undefined {
   if (!formValue.dataSourceType) return undefined;
@@ -142,12 +142,12 @@ async function handleSubmit() {
       </el-form-item>
       <el-form-item label="数据来源" prop="dataSourceType">
         <el-select v-model="form.dataSourceType" clearable placeholder="选填">
-          <el-option :value="SourceType.ORIGINAL" label="原创" />
-          <el-option :value="SourceType.OFFICIAL" label="官网" />
-          <el-option :value="SourceType.EXTERNAL" label="外链" />
+          <el-option :value="SourceTypeEnum.ORIGINAL" label="原创" />
+          <el-option :value="SourceTypeEnum.OFFICIAL" label="官网" />
+          <el-option :value="SourceTypeEnum.EXTERNAL" label="外链" />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="form.dataSourceType === SourceType.OFFICIAL || form.dataSourceType === SourceType.EXTERNAL" label="来源备注" prop="dataSourceNote">
+      <el-form-item v-if="form.dataSourceType === SourceTypeEnum.OFFICIAL || form.dataSourceType === SourceTypeEnum.EXTERNAL" label="来源备注" prop="dataSourceNote">
         <el-input v-model="form.dataSourceNote" placeholder="URL 等备注" />
       </el-form-item>
       <el-form-item label="补充说明" prop="note">

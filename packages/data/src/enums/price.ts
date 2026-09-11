@@ -1,5 +1,5 @@
-/** 币种 */
-export enum Currency {
+﻿/** 币种 */
+export enum CurrencyEnum {
   CNY = 'CNY',
   USD = 'USD',
   JPY = 'JPY',
@@ -10,7 +10,7 @@ export enum Currency {
 }
 
 /** 价格来源 */
-export enum PriceSource {
+export enum PriceSourceEnum {
   /** 手动录入 */
   MANUAL = 'MANUAL',
   /** 淘宝 */

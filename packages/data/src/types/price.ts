@@ -1,4 +1,4 @@
-import type { Currency, PriceSource } from '../enums/price';
+﻿import type { CurrencyEnum, PriceSourceEnum } from '../enums/price';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
 /** 产品价格记录（用于价格走向、历史最低价） */
@@ -7,8 +7,8 @@ export interface PriceRecord extends TimestampFields {
   productId: Id;
   /** 价格 */
   price: number;
-  currency: Currency;
-  source: PriceSource;
+  currency: CurrencyEnum;
+  source: PriceSourceEnum;
   /** 来源链接 */
   sourceUrl?: string;
   /** 记录时间（价格对应的时间点） */
@@ -20,8 +20,8 @@ export interface PriceRecord extends TimestampFields {
 export interface PriceTrendPoint {
   recordedAt: DateTimeString;
   price: number;
-  currency: Currency;
-  source: PriceSource;
+  currency: CurrencyEnum;
+  source: PriceSourceEnum;
 }
 
 /** 产品价格汇总 */

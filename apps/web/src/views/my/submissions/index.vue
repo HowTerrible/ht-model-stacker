@@ -1,7 +1,7 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { reviewStatusLabels, reviewStatusTagTypes } from '@model-stacker/components';
-import { ReviewStatus } from '@model-stacker/data';
+import { ReviewStatusEnum } from '@model-stacker/data';
 import type { ManufacturerSubmission, ProductSubmission } from '@model-stacker/data';
 import { listMyManufacturerSubmissions, listMyProductSubmissions } from '@/api/submission';
 import ManufacturerForm from './manufacturer-form.vue';
@@ -20,15 +20,15 @@ const pdLoading = ref(false);
 const pdItems = ref<ProductSubmission[]>([]);
 const pdTotal = ref(0);
 
-const STATUS_FILTERS: Array<{ value: ReviewStatus | undefined; label: string }> = [
+const STATUS_FILTERS: Array<{ value: ReviewStatusEnum | undefined; label: string }> = [
   { value: undefined, label: '全部' },
-  { value: ReviewStatus.PENDING, label: '待审核' },
-  { value: ReviewStatus.APPROVED, label: '已通过' },
-  { value: ReviewStatus.REJECTED, label: '已拒绝' },
+  { value: ReviewStatusEnum.PENDING, label: '待审核' },
+  { value: ReviewStatusEnum.APPROVED, label: '已通过' },
+  { value: ReviewStatusEnum.REJECTED, label: '已拒绝' },
 ];
 
-const mfStatus = ref<ReviewStatus | undefined>(undefined);
-const pdStatus = ref<ReviewStatus | undefined>(undefined);
+const mfStatus = ref<ReviewStatusEnum | undefined>(undefined);
+const pdStatus = ref<ReviewStatusEnum | undefined>(undefined);
 
 async function loadManufacturers() {
   mfLoading.value = true;
@@ -103,8 +103,8 @@ onMounted(refresh);
       <el-table-column prop="fullName" label="全称" min-width="150" show-overflow-tooltip />
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatus]" size="small">
-            {{ reviewStatusLabels[row.reviewStatus as ReviewStatus] }}
+          <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatusEnum]" size="small">
+            {{ reviewStatusLabels[row.reviewStatus as ReviewStatusEnum] }}
           </el-tag>
         </template>
       </el-table-column>
@@ -121,8 +121,8 @@ onMounted(refresh);
       <el-table-column prop="manufacturerName" label="厂家" min-width="110" />
       <el-table-column label="状态" width="100">
         <template #default="{ row }">
-          <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatus]" size="small">
-            {{ reviewStatusLabels[row.reviewStatus as ReviewStatus] }}
+          <el-tag :type="reviewStatusTagTypes[row.reviewStatus as ReviewStatusEnum]" size="small">
+            {{ reviewStatusLabels[row.reviewStatus as ReviewStatusEnum] }}
           </el-tag>
         </template>
       </el-table-column>

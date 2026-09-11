@@ -1,7 +1,7 @@
-<script setup lang="ts">
-import { ProductKind } from '@model-stacker/data';
+﻿<script setup lang="ts">
+import { ProductKindEnum } from '@model-stacker/data';
 
-const kinds = Object.values(ProductKind);
+const kinds = Object.values(ProductKindEnum);
 </script>
 
 <template>

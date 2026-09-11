@@ -1,6 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { CommonStatus } from "@model-stacker/data";
+import { CommonStatusEnum } from "@model-stacker/data";
 import { commonStatusOptions } from "../options";
 import ManufacturerItem from "./manufacturer-item.vue";
 
@@ -13,14 +13,14 @@ interface ManufacturerListItem {
   country?: string;
   website?: string;
   description?: string;
-  status: CommonStatus;
+  status: CommonStatusEnum;
 }
 
 const viewMode = ref<ViewMode>("list");
 const keyword = ref("");
 
 const moreExpanded = ref<string[]>([]);
-const filterStatuses = ref<CommonStatus[]>([]);
+const filterStatuses = ref<CommonStatusEnum[]>([]);
 const filterCountries = ref<string[]>([]);
 
 const allCountries = [
@@ -56,7 +56,7 @@ const mockList: ManufacturerListItem[] = [
     country: "日本",
     website: "https://bandai-namco.com",
     description: "全球最大模型玩具厂商，高达系列版权方",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m02",
@@ -65,7 +65,7 @@ const mockList: ManufacturerListItem[] = [
     country: "日本",
     website: "https://www.tamiya.com",
     description: "老牌模型厂商，以军模和四驱车闻名",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m03",
@@ -74,7 +74,7 @@ const mockList: ManufacturerListItem[] = [
     country: "日本",
     website: "https://www.hasegawa-model.co.jp",
     description: "专注航空与军事模型",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m04",
@@ -82,7 +82,7 @@ const mockList: ManufacturerListItem[] = [
     fullName: "FUJIMI CORPORATION",
     country: "日本",
     description: "日本综合模型厂商，产品线丰富",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m05",
@@ -90,7 +90,7 @@ const mockList: ManufacturerListItem[] = [
     fullName: "Dragon Models Limited",
     country: "中国香港",
     description: "以 1/35 军事模型和合金车模著称",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m06",
@@ -99,7 +99,7 @@ const mockList: ManufacturerListItem[] = [
     country: "中国",
     website: "https://www Trumpeter.com",
     description: "中国最大模型厂商，产品覆盖军模、船模、飞机",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m07",
@@ -108,7 +108,7 @@ const mockList: ManufacturerListItem[] = [
     country: "中国",
     website: "https://www.meng-model.com",
     description: "新锐模型品牌，以高精度开模著称",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m08",
@@ -116,7 +116,7 @@ const mockList: ManufacturerListItem[] = [
     fullName: "GreatWall Hobby",
     country: "中国",
     description: "专注 1/72 航空模型",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m09",
@@ -125,7 +125,7 @@ const mockList: ManufacturerListItem[] = [
     country: "日本",
     website: "https://www.gsi-creos.com",
     description: "模型辅料巨头，涂料、工具、渗线液等",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m10",
@@ -133,7 +133,7 @@ const mockList: ManufacturerListItem[] = [
     fullName: "GSI Creos (Mr. Hobby 品牌线)",
     country: "日本",
     description: "GSI 旗下模型工具与辅料品牌",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m11",
@@ -142,7 +142,7 @@ const mockList: ManufacturerListItem[] = [
     country: "日本",
     website: "https://www.kotobukiya.co.jp",
     description: "手办与拼装模型厂商，MSG 系列",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m12",
@@ -151,7 +151,7 @@ const mockList: ManufacturerListItem[] = [
     country: "西班牙",
     website: "https://www.ak-interactive.com",
     description: "模型旧化与涂装辅料品牌",
-    status: CommonStatus.ACTIVE,
+    status: CommonStatusEnum.ACTIVE,
   },
   {
     id: "m13",
@@ -159,7 +159,7 @@ const mockList: ManufacturerListItem[] = [
     fullName: "MiniArt Co., Ltd.",
     country: "韩国",
     description: "韩国拼装模型与手办品牌",
-    status: CommonStatus.INACTIVE,
+    status: CommonStatusEnum.INACTIVE,
   },
 ];
 

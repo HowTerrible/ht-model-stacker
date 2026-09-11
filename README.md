@@ -11,7 +11,8 @@ ModelStacker/
 │   ├── admin/      # 管理后台前端（Vue3 + Element Plus）
 │   └── server/     # 服务端（NestJS + Prisma + SQLite）
 └── packages/
-    └── data/       # 公共数据模块：枚举、数据结构（前后端共享，单一来源）
+    ├── data/       # 公共数据模块：枚举、显示表、数据结构（前后端共享，单一来源）
+    └── components/ # 公共 Vue 组件包（admin/web 共用：表单字段组、详情展示、选项派生）
 ```
 
 ## 技术栈
@@ -23,6 +24,7 @@ ModelStacker/
 | 服务端 | NestJS + Prisma ORM |
 | 数据库 | SQLite（本地文件，暂不独立部署） |
 | 共享数据 | TypeScript 包 `@model-stacker/data` |
+| 共享组件 | Vue 3 组件包 `@model-stacker/components` |
 | 包管理 | pnpm workspaces |
 
 ## 术语词典
@@ -87,6 +89,8 @@ pnpm db:studio    # Prisma Studio 可视化查看数据库
 ## 数据约定
 
 - 枚举值以 `packages/data` 为唯一来源，数据库中以字符串形式存储枚举 code；
+- **枚举命名**：枚举类型标识符统一以 `Enum` 结尾（如 `ArticleTypeEnum`、`StackStatusEnum`），枚举值用英文大写 code，不与中文文案耦合；
+- 中文展示文案集中在 `packages/data` 的显示表（`labels.ts`）——新增枚举成员时编译器强制补齐文案；页面选项 / 标签统一由 `enumToOptions` 派生，避免各处手写映射重复、漂移；
 - 数据库交互统一封装在 `apps/server/src/prisma/`（`PrismaService`），后续切换数据库只需调整 `schema.prisma` 的 datasource 并重新迁移。
 
 ## 产品分类（Theme）分级规则

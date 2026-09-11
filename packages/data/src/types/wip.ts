@@ -1,4 +1,4 @@
-import type { WipStage, WipStatus } from '../enums/wip';
+﻿import type { WipStageEnum, WipStatusEnum } from '../enums/wip';
 import type { DateTimeString, Id, Image, TimestampFields } from './common';
 
 /** 烂尾记录（开封但未完成） */
@@ -9,18 +9,18 @@ export interface Wip extends TimestampFields {
   /** 开工时间 */
   startedAt: DateTimeString;
   /** 制作阶段（进度量化困难，用阶段表达当前进度） */
-  stage: WipStage;
+  stage: WipStageEnum;
   /** 烂尾照片 */
   photos: Image[];
-  status: WipStatus;
+  status: WipStatusEnum;
   notes?: string;
 }
 
 export interface WipQuery {
   userId: Id;
-  status?: WipStatus;
+  status?: WipStatusEnum;
   /** 按制作阶段筛选 */
-  stage?: WipStage;
+  stage?: WipStageEnum;
   page?: number;
   pageSize?: number;
 }

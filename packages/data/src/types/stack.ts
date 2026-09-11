@@ -1,6 +1,6 @@
-import type { Currency } from '../enums/price';
-import type { PurchaseChannel, StackStatus } from '../enums/stack';
-import type { WipStage } from '../enums/wip';
+﻿import type { CurrencyEnum } from '../enums/price';
+import type { PurchaseChannelEnum, StackStatusEnum } from '../enums/stack';
+import type { WipStageEnum } from '../enums/wip';
 import type { DateTimeString, Id, TimestampFields } from './common';
 
 /**
@@ -31,11 +31,11 @@ export interface Stack extends TimestampFields {
   purchasedAt?: DateTimeString;
   /** 购买价格 */
   purchasePrice?: number;
-  currency: Currency;
-  channel?: PurchaseChannel;
-  status: StackStatus;
-  /** 完成进度（阶段，开工后填写，枚举同 WipStage） */
-  stage?: WipStage;
+  currency: CurrencyEnum;
+  channel?: PurchaseChannelEnum;
+  status: StackStatusEnum;
+  /** 完成进度（阶段，开工后填写，枚举同 WipStageEnum） */
+  stage?: WipStageEnum;
   /** 关联的烂尾记录 ID（该堆积烂尾后对应 Wip） */
   wipId?: Id;
   /** 堆积位置 */
@@ -45,9 +45,9 @@ export interface Stack extends TimestampFields {
 
 export interface StackQuery {
   userId: Id;
-  status?: StackStatus;
+  status?: StackStatusEnum;
   /** 按完成进度（阶段）筛选 */
-  stage?: WipStage;
+  stage?: WipStageEnum;
   /** 是否只查已关联烂尾的堆积 */
   onlyWithWip?: boolean;
   /** 是否只查已关联资料库产品的堆积 */
@@ -74,7 +74,7 @@ export interface SpendingByPeriod {
 export interface SpendingStats {
   /** 总花销 */
   total: number;
-  currency: Currency;
+  currency: CurrencyEnum;
   /** 分时间段统计 */
   byPeriod: SpendingByPeriod[];
 }

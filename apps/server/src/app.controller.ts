@@ -1,5 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
-import { ProductKind } from '@model-stacker/data';
+﻿import { Controller, Get } from '@nestjs/common';
+import { ProductKindEnum } from '@model-stacker/data';
 import { AppService } from './app.service';
 
 @Controller()
@@ -14,7 +14,7 @@ export class AppController {
   @Get('meta')
   meta() {
     return {
-      productKinds: Object.values(ProductKind),
+      productKinds: Object.values(ProductKindEnum),
     };
   }
 }

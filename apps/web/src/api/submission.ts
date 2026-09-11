@@ -1,9 +1,9 @@
-import type {
+﻿import type {
   ManufacturerSubmission,
   ManufacturerSubmissionInput,
   ProductSubmission,
   ProductSubmissionInput,
-  ReviewStatus,
+  ReviewStatusEnum,
 } from '@model-stacker/data';
 import { request } from './client';
 
@@ -31,7 +31,7 @@ export function submitProduct(payload: ProductSubmissionInput) {
 
 /** 我的厂家提交列表 */
 export function listMyManufacturerSubmissions(params: {
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   page?: number;
   pageSize?: number;
 }) {
@@ -41,7 +41,7 @@ export function listMyManufacturerSubmissions(params: {
 
 /** 我的产品提交列表 */
 export function listMyProductSubmissions(params: {
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   page?: number;
   pageSize?: number;
 }) {

@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { CommonStatus } from '@model-stacker/data';
+﻿<script setup lang="ts">
+import { CommonStatusEnum } from '@model-stacker/data';
 import { commonStatusOptions } from '../options';
 
 /**
@@ -14,7 +14,7 @@ defineProps<{
     country?: string;
     website?: string;
     description?: string;
-    status: CommonStatus;
+    status: CommonStatusEnum;
   };
 }>();
 

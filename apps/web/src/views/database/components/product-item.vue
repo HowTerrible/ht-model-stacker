@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ModelType, ProductKind, ProductStatus, ToolType } from "@model-stacker/data";
+﻿<script setup lang="ts">
+import { ModelTypeEnum, ProductKindEnum, ProductStatusEnum, ToolTypeEnum } from "@model-stacker/data";
 import {
   kindLabels,
   kindTagTypes,
@@ -15,11 +15,11 @@ interface ProductItem {
   officialName?: string;
   modelNo?: string;
   manufacturerName: string;
-  kind: ProductKind;
-  modelTypes?: ModelType[];
-  toolType?: ToolType;
+  kind: ProductKindEnum;
+  modelTypes?: ModelTypeEnum[];
+  toolType?: ToolTypeEnum;
   scale?: string;
-  status: ProductStatus;
+  status: ProductStatusEnum;
 }
 
 defineProps<{ item: ProductItem; viewMode: "list" | "grid" }>();
@@ -27,7 +27,7 @@ defineProps<{ item: ProductItem; viewMode: "list" | "grid" }>();
 defineEmits<{ click: [item: ProductItem] }>();
 
 function subTags(item: ProductItem): string[] {
-  if (item.kind === ProductKind.MODEL) {
+  if (item.kind === ProductKindEnum.MODEL) {
     return (item.modelTypes ?? []).map((t) => modelTypeLabels[t] ?? t);
   }
   if (item.toolType) {

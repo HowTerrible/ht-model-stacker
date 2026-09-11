@@ -1,5 +1,5 @@
-import type { ReviewStatus } from '../enums/common';
-import type { SupplementType } from '../enums/supplement';
+﻿import type { ReviewStatusEnum } from '../enums/common';
+import type { SupplementTypeEnum } from '../enums/supplement';
 import type { DateTimeString, Id, ReviewFields, TimestampFields } from './common';
 
 /**
@@ -15,7 +15,7 @@ export interface DataSupplementRequest extends TimestampFields, ReviewFields {
   /** 来源堆积 ID（该申请由某个堆积发起） */
   stackId: Id;
   /** 申请类型：补充产品 / 补充厂家 */
-  type: SupplementType;
+  type: SupplementTypeEnum;
   /** 名称（产品名 / 厂家名） */
   name: string;
   /** 厂家名（type 为 PRODUCT 时补充，作为厂家匹配依据） */
@@ -33,8 +33,8 @@ export interface DataSupplementRequestQuery {
   userId?: Id;
   /** 按来源堆积筛选 */
   stackId?: Id;
-  type?: SupplementType;
-  reviewStatus?: ReviewStatus;
+  type?: SupplementTypeEnum;
+  reviewStatus?: ReviewStatusEnum;
   /** 按名称 / 备注模糊搜索 */
   keyword?: string;
   page?: number;

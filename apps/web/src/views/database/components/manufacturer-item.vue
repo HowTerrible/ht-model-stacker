@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { CommonStatus } from "@model-stacker/data";
+﻿<script setup lang="ts">
+import { CommonStatusEnum } from "@model-stacker/data";
 import { commonStatusLabels, commonStatusTagTypes } from "../options";
 
 interface ManufacturerItem {
@@ -9,7 +9,7 @@ interface ManufacturerItem {
   country?: string;
   website?: string;
   description?: string;
-  status: CommonStatus;
+  status: CommonStatusEnum;
 }
 
 defineProps<{ item: ManufacturerItem }>();

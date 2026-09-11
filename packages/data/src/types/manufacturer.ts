@@ -1,4 +1,4 @@
-import type { CommonStatus, ReviewStatus } from '../enums/common';
+﻿import type { CommonStatusEnum, ReviewStatusEnum } from '../enums/common';
 import type { DataSource, Id, ReviewFields, TimestampFields } from './common';
 
 /** 产品厂家 / 品牌 */
@@ -16,7 +16,7 @@ export interface Manufacturer extends TimestampFields, ReviewFields {
   description?: string;
   /** Logo 图片地址 */
   logoUrl?: string;
-  status: CommonStatus;
+  status: CommonStatusEnum;
   /** 数据来源（格式：来源类型|备注） */
   dataSource?: DataSource;
 }
@@ -24,8 +24,8 @@ export interface Manufacturer extends TimestampFields, ReviewFields {
 export interface ManufacturerQuery {
   keyword?: string;
   country?: string;
-  status?: CommonStatus;
-  reviewStatus?: ReviewStatus;
+  status?: CommonStatusEnum;
+  reviewStatus?: ReviewStatusEnum;
   page?: number;
   pageSize?: number;
 }

@@ -1,5 +1,5 @@
-/** 产品种类：比例模型 / 工具辅料 */
-export enum ProductKind {
+﻿/** 产品种类：比例模型 / 工具辅料 */
+export enum ProductKindEnum {
   /** 比例模型 */
   MODEL = 'MODEL',
   /** 工具辅料 */
@@ -7,7 +7,7 @@ export enum ProductKind {
 }
 
 /** 模型子类（比例模型细分，可多选，用法同 tag 标记） */
-export enum ModelType {
+export enum ModelTypeEnum {
   /** 军事模型-坦克 */
   MILITARY_TANK = 'MILITARY_TANK',
   /** 军事模型-飞机 */
@@ -37,7 +37,7 @@ export enum ModelType {
 }
 
 /** 工具辅料子类 */
-export enum ToolType {
+export enum ToolTypeEnum {
   /** 颜料 */
   PAINT = 'PAINT',
   /** 笔刷 */
@@ -51,7 +51,7 @@ export enum ToolType {
 }
 
 /** 常见模型比例 */
-export enum ModelScale {
+export enum ModelScaleEnum {
   S_1_12 = '1/12',
   S_1_16 = '1/16',
   S_1_24 = '1/24',
@@ -79,7 +79,7 @@ export enum ModelScale {
 }
 
 /** 材质 */
-export enum Material {
+export enum MaterialEnum {
   /** 塑料射出 */
   INJECTED_PLASTIC = 'INJECTED_PLASTIC',
   /** 乐高积木 */
@@ -107,7 +107,7 @@ export enum Material {
 }
 
 /** 产品状态 */
-export enum ProductStatus {
+export enum ProductStatusEnum {
   /** 在售 */
   ON_SALE = 'ON_SALE',
   /** 停产 */

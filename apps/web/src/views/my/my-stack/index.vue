@@ -1,10 +1,10 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import {
-  Currency,
-  ProductKind,
-  PurchaseChannel,
-  StackStatus,
+  CurrencyEnum,
+  ProductKindEnum,
+  PurchaseChannelEnum,
+  StackStatusEnum,
 } from "@model-stacker/data";
 import StackForm from "../components/stack-form.vue";
 import {
@@ -22,17 +22,17 @@ import {
 type ViewMode = "list" | "grid";
 
 /** 产品种类筛选：全部 / 仅模型 / 仅工具辅料 */
-type KindScope = "ALL" | ProductKind;
+type KindScope = "ALL" | ProductKindEnum;
 
 interface StackListItem {
   id: string;
   productName: string;
-  kind: ProductKind;
-  status: StackStatus;
+  kind: ProductKindEnum;
+  status: StackStatusEnum;
   purchasedAt: string;
   purchasePrice?: number;
-  currency: Currency;
-  channel?: PurchaseChannel;
+  currency: CurrencyEnum;
+  channel?: PurchaseChannelEnum;
   notes?: string;
 }
 
@@ -46,8 +46,8 @@ const kindScope = ref<KindScope>("ALL");
 const moreExpanded = ref<string[]>([]);
 
 /** 更多筛选条件：状态 / 渠道 / 购买时间范围 */
-const filterStatuses = ref<StackStatus[]>([]);
-const filterChannels = ref<PurchaseChannel[]>([]);
+const filterStatuses = ref<StackStatusEnum[]>([]);
+const filterChannels = ref<PurchaseChannelEnum[]>([]);
 const purchaseRange = ref<[string, string] | null>(null);
 
 watch([kindScope, filterStatuses, filterChannels, purchaseRange], () => {
@@ -65,127 +65,127 @@ const mockList: StackListItem[] = [
   {
     id: "s01",
     productName: "MG 沙扎比 Ver.Ka",
-    kind: ProductKind.MODEL,
-    status: StackStatus.IN_PROGRESS,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.IN_PROGRESS,
     purchasedAt: "2026-07-12",
     purchasePrice: 465,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.TAOBAO,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.TAOBAO,
     notes: "万代再版购入",
   },
   {
     id: "s02",
     productName: "RG 强袭自由高达",
-    kind: ProductKind.MODEL,
-    status: StackStatus.UNSTARTED,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.UNSTARTED,
     purchasedAt: "2026-08-01",
     purchasePrice: 210,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.PDD,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.PDD,
   },
   {
     id: "s03",
     productName: "田宫薄刃剪钳 74123",
-    kind: ProductKind.TOOL_SUPPLY,
-    status: StackStatus.FINISHED,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    status: StackStatusEnum.FINISHED,
     purchasedAt: "2026-06-18",
     purchasePrice: 138,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.JD,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.JD,
   },
   {
     id: "s04",
     productName: "郡士油性漆 消光白",
-    kind: ProductKind.TOOL_SUPPLY,
-    status: StackStatus.FINISHED,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    status: StackStatusEnum.FINISHED,
     purchasedAt: "2026-06-20",
     purchasePrice: 22,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.TAOBAO,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.TAOBAO,
   },
   {
     id: "s05",
     productName: "HG 高机动扎古 Team Monstre Custom",
-    kind: ProductKind.MODEL,
-    status: StackStatus.WIP,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.WIP,
     purchasedAt: "2026-05-02",
     purchasePrice: 95,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.XIANYU,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.XIANYU,
     notes: "已转烂尾记录",
   },
   {
     id: "s06",
     productName: "RG 沙扎比",
-    kind: ProductKind.MODEL,
-    status: StackStatus.UNSTARTED,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.UNSTARTED,
     purchasedAt: "2026-08-10",
     purchasePrice: 268,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.TAOBAO,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.TAOBAO,
     notes: "预售等待发货",
   },
   {
     id: "s07",
     productName: "GSI 水性漆套装 12 色",
-    kind: ProductKind.TOOL_SUPPLY,
-    status: StackStatus.IN_PROGRESS,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    status: StackStatusEnum.IN_PROGRESS,
     purchasedAt: "2026-07-28",
     purchasePrice: 168,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.JD,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.JD,
   },
   {
     id: "s08",
     productName: "M.S.G 重武装套件",
-    kind: ProductKind.MODEL,
-    status: StackStatus.SOLD,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.SOLD,
     purchasedAt: "2026-04-15",
     purchasePrice: 3200,
-    currency: Currency.JPY,
-    channel: PurchaseChannel.OVERSEAS,
+    currency: CurrencyEnum.JPY,
+    channel: PurchaseChannelEnum.OVERSEAS,
     notes: "已转让出坑",
   },
   {
     id: "s09",
     productName: "水口刀 + 打磨海绵组合",
-    kind: ProductKind.TOOL_SUPPLY,
-    status: StackStatus.FINISHED,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    status: StackStatusEnum.FINISHED,
     purchasedAt: "2026-05-30",
     purchasePrice: 45.5,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.PDD,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.PDD,
   },
   {
     id: "s10",
     productName: "MG 主天使高达",
-    kind: ProductKind.MODEL,
-    status: StackStatus.FINISHED,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.FINISHED,
     purchasedAt: "2026-03-21",
     purchasePrice: 235,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.OFFLINE,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.OFFLINE,
     notes: "店庆购入",
   },
   {
     id: "s11",
     productName: "喷笔 + 龟泵套装",
-    kind: ProductKind.TOOL_SUPPLY,
-    status: StackStatus.UNSTARTED,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    status: StackStatusEnum.UNSTARTED,
     purchasedAt: "2026-07-05",
     purchasePrice: 520,
-    currency: Currency.HKD,
-    channel: PurchaseChannel.OVERSEAS,
+    currency: CurrencyEnum.HKD,
+    channel: PurchaseChannelEnum.OVERSEAS,
   },
   {
     id: "s12",
     productName: "HG 苍白骑士 D型",
-    kind: ProductKind.MODEL,
-    status: StackStatus.UNSTARTED,
+    kind: ProductKindEnum.MODEL,
+    status: StackStatusEnum.UNSTARTED,
     purchasedAt: "2026-08-18",
     purchasePrice: 120,
-    currency: Currency.CNY,
-    channel: PurchaseChannel.XIANYU,
+    currency: CurrencyEnum.CNY,
+    channel: PurchaseChannelEnum.XIANYU,
     notes: "二手几乎全新",
   },
 ];
@@ -273,8 +273,8 @@ function priceText(item: StackListItem): string {
         <div class="scope-group">
           <el-radio-group v-model="kindScope">
             <el-radio-button value="ALL">全部</el-radio-button>
-            <el-radio-button :value="ProductKind.MODEL">仅模型</el-radio-button>
-            <el-radio-button :value="ProductKind.TOOL_SUPPLY"
+            <el-radio-button :value="ProductKindEnum.MODEL">仅模型</el-radio-button>
+            <el-radio-button :value="ProductKindEnum.TOOL_SUPPLY"
               >仅工具辅料</el-radio-button
             >
           </el-radio-group>

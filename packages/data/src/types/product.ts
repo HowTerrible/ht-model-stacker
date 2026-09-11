@@ -1,5 +1,5 @@
-import type { Material, ModelScale, ModelType, ProductKind, ProductStatus, ToolType } from '../enums/product';
-import type { ReviewStatus } from '../enums/common';
+﻿import type { MaterialEnum, ModelScaleEnum, ModelTypeEnum, ProductKindEnum, ProductStatusEnum, ToolTypeEnum } from '../enums/product';
+import type { ReviewStatusEnum } from '../enums/common';
 import type { DataSource, DateTimeString, Id, Image, ReviewFields, TimestampFields } from './common';
 
 /** 产品（模型 / 工具辅料） */
@@ -14,17 +14,17 @@ export interface Product extends TimestampFields, ReviewFields {
   /** 货号 / 型号 */
   modelNo?: string;
   /** 种类：模型 / 工具辅料 */
-  kind: ProductKind;
+  kind: ProductKindEnum;
   /** 模型子类（可多选，用法同 tag 标记） */
-  modelTypes: ModelType[];
+  modelTypes: ModelTypeEnum[];
   /** 工具辅料子类 */
-  toolType?: ToolType;
+  toolType?: ToolTypeEnum;
   /** 主体材质 */
-  material?: Material;
+  material?: MaterialEnum;
   /** 配件（材质枚举数组） */
-  accessoryMaterials: Material[];
+  accessoryMaterials: MaterialEnum[];
   /** 比例 */
-  scale?: ModelScale | string;
+  scale?: ModelScaleEnum | string;
   /** 发售年份 */
   year?: number;
   /** 发售日期 */
@@ -39,7 +39,7 @@ export interface Product extends TimestampFields, ReviewFields {
   themeId?: Id;
   /** 题材标签（用于关联竞品、检索） */
   tags: string[];
-  status: ProductStatus;
+  status: ProductStatusEnum;
   /** 数据来源（格式：来源类型|备注） */
   dataSource?: DataSource;
   /** 说明书来源（格式：来源类型|备注，多个地址用半角逗号分隔） */
@@ -50,15 +50,15 @@ export interface Product extends TimestampFields, ReviewFields {
 
 export interface ProductQuery {
   keyword?: string;
-  kind?: ProductKind;
-  modelTypes?: ModelType[];
+  kind?: ProductKindEnum;
+  modelTypes?: ModelTypeEnum[];
   /** 按主体材质筛选 */
-  material?: Material;
+  material?: MaterialEnum;
   manufacturerId?: Id;
   /** 按题材节点筛选 */
   themeId?: Id;
-  status?: ProductStatus;
-  reviewStatus?: ReviewStatus;
+  status?: ProductStatusEnum;
+  reviewStatus?: ReviewStatusEnum;
   tags?: string[];
   year?: number;
   page?: number;

@@ -1,9 +1,9 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import type { Id } from "@model-stacker/data";
-import { Currency, PurchaseChannel, StackStatus } from "@model-stacker/data";
+import { CurrencyEnum, PurchaseChannelEnum, StackStatusEnum } from "@model-stacker/data";
 import { channelOptions, currencyOptions, statusOptions } from "./options";
 import {
   deleteStack,
@@ -44,9 +44,9 @@ interface StackFormModel {
   modelNo: string;
   purchasedAt: string;
   purchasePrice?: number;
-  currency: Currency;
-  channel?: PurchaseChannel;
-  status: StackStatus;
+  currency: CurrencyEnum;
+  channel?: PurchaseChannelEnum;
+  status: StackStatusEnum;
   location: string;
   notes: string;
 }
@@ -57,9 +57,9 @@ const createEmptyForm = (): StackFormModel => ({
   modelNo: "",
   purchasedAt: "",
   purchasePrice: undefined,
-  currency: Currency.CNY,
+  currency: CurrencyEnum.CNY,
   channel: undefined,
-  status: StackStatus.UNSTARTED,
+  status: StackStatusEnum.UNSTARTED,
   location: "",
   notes: "",
 });

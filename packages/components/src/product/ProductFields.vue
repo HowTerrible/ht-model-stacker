@@ -1,6 +1,6 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed } from 'vue';
-import { ProductKind } from '@model-stacker/data';
+import { ProductKindEnum } from '@model-stacker/data';
 import {
   kindOptions,
   materialOptions,
@@ -21,19 +21,19 @@ const props = defineProps<{
     officialName?: string;
     modelNo?: string;
     manufacturerId?: number;
-    kind: ProductKind;
+    kind: ProductKindEnum;
     modelTypes: string[];
     toolType?: string;
     material?: string;
     scale?: string;
     description?: string;
-    status: ProductKind extends never ? never : never;
+    status: ProductKindEnum extends never ? never : never;
     [key: string]: unknown;
   };
 }>();
 
-const isModel = computed(() => props.form.kind === ProductKind.MODEL);
-const isToolSupply = computed(() => props.form.kind === ProductKind.TOOL_SUPPLY);
+const isModel = computed(() => props.form.kind === ProductKindEnum.MODEL);
+const isToolSupply = computed(() => props.form.kind === ProductKindEnum.TOOL_SUPPLY);
 </script>
 
 <template>

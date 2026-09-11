@@ -1,10 +1,10 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import {
-  ModelType,
-  ProductKind,
-  ProductStatus,
-  ToolType,
+  ModelTypeEnum,
+  ProductKindEnum,
+  ProductStatusEnum,
+  ToolTypeEnum,
 } from "@model-stacker/data";
 import {
   kindLabels,
@@ -27,29 +27,29 @@ interface ProductListItem {
   officialName?: string;
   modelNo?: string;
   manufacturerName: string;
-  kind: ProductKind;
-  modelTypes?: ModelType[];
-  toolType?: ToolType;
+  kind: ProductKindEnum;
+  modelTypes?: ModelTypeEnum[];
+  toolType?: ToolTypeEnum;
   scale?: string;
-  status: ProductStatus;
+  status: ProductStatusEnum;
 }
 
 const viewMode = ref<ViewMode>("list");
 const keyword = ref("");
 
 /** 产品种类筛选（多选） */
-const filterKinds = ref<ProductKind[]>([]);
+const filterKinds = ref<ProductKindEnum[]>([]);
 
 /** 型号/工具子类筛选（多选） */
-const filterModelTypes = ref<ModelType[]>([]);
-const filterToolTypes = ref<ToolType[]>([]);
+const filterModelTypes = ref<ModelTypeEnum[]>([]);
+const filterToolTypes = ref<ToolTypeEnum[]>([]);
 
 /** 折叠面板展开状态 */
 const moreExpanded = ref<string[]>([]);
 
 /** 更多筛选条件 */
 const filterManufacturers = ref<string[]>([]);
-const filterStatuses = ref<ProductStatus[]>([]);
+const filterStatuses = ref<ProductStatusEnum[]>([]);
 
 const allManufacturerNames = [
   "万代 Bandai",
@@ -86,22 +86,22 @@ function clearAllFilters() {
 
 /** 当 kinds 变化时，清空不相关的子类选择 */
 watch(filterKinds, (kinds) => {
-  if (!kinds.includes(ProductKind.MODEL)) {
+  if (!kinds.includes(ProductKindEnum.MODEL)) {
     filterModelTypes.value = [];
   }
-  if (!kinds.includes(ProductKind.TOOL_SUPPLY)) {
+  if (!kinds.includes(ProductKindEnum.TOOL_SUPPLY)) {
     filterToolTypes.value = [];
   }
 });
 
 const showModelTypes = computed(() =>
   filterKinds.value.length === 0 ||
-  filterKinds.value.includes(ProductKind.MODEL),
+  filterKinds.value.includes(ProductKindEnum.MODEL),
 );
 
 const showToolTypes = computed(() =>
   filterKinds.value.length === 0 ||
-  filterKinds.value.includes(ProductKind.TOOL_SUPPLY),
+  filterKinds.value.includes(ProductKindEnum.TOOL_SUPPLY),
 );
 
 // TODO 待接入资料库分页查询接口，当前使用本地示例数据演示交互
@@ -112,10 +112,10 @@ const mockList: ProductListItem[] = [
     officialName: "MSN-04 SAZABI Ver.Ka",
     modelNo: "MG 1/100",
     manufacturerName: "万代 Bandai",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_TANK],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_TANK],
     scale: "1/100",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p02",
@@ -123,28 +123,28 @@ const mockList: ProductListItem[] = [
     officialName: "ZGMF-X20A STRIKE FREEDOM GUNDAM",
     modelNo: "RG 1/144",
     manufacturerName: "万代 Bandai",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_AIRCRAFT],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_AIRCRAFT],
     scale: "1/144",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p03",
     productName: "田宫薄刃剪钳 74123",
     modelNo: "74123",
     manufacturerName: "田宫 Tamiya",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.TOOL,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.TOOL,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p04",
     productName: "郡士油性漆 消光白",
     modelNo: "B-514",
     manufacturerName: "GSI 郡士",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.PAINT,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.PAINT,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p05",
@@ -152,10 +152,10 @@ const mockList: ProductListItem[] = [
     officialName: "MS-06F ZAKU II",
     modelNo: "HG 1/144",
     manufacturerName: "万代 Bandai",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_TANK],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_TANK],
     scale: "1/144",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p06",
@@ -163,37 +163,37 @@ const mockList: ProductListItem[] = [
     officialName: "Leopard 2A6",
     modelNo: "6383",
     manufacturerName: "田宫 Tamiya",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_TANK],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_TANK],
     scale: "1/35",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p07",
     productName: "GSI 水性漆套装 12 色",
     modelNo: "GS-12SET",
     manufacturerName: "GSI 郡士",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.PAINT,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.PAINT,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p08",
     productName: "M.S.G 重武装套件",
     modelNo: "M.S.G HW-001",
     manufacturerName: "寿屋 KOTOBUKIYA",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.UPGRADE_SET],
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.UPGRADE_SET],
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p09",
     productName: "郡士渗线液 4 色套装",
     modelNo: "B-604",
     manufacturerName: "GSI 郡士",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.PAINT,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.PAINT,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p10",
@@ -201,19 +201,19 @@ const mockList: ProductListItem[] = [
     officialName: "GF13-001NHII MOTHER GUNDAM",
     modelNo: "MG 1/100",
     manufacturerName: "万代 Bandai",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_AIRCRAFT],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_AIRCRAFT],
     scale: "1/100",
-    status: ProductStatus.DISCONTINUED,
+    status: ProductStatusEnum.DISCONTINUED,
   },
   {
     id: "p11",
     productName: "喷笔 + 龟泵套装",
     modelNo: "HP-100",
     manufacturerName: "Mr. Hobby",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.TOOL,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.TOOL,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p12",
@@ -221,10 +221,10 @@ const mockList: ProductListItem[] = [
     officialName: "P-51D Mustang",
     modelNo: "61103",
     manufacturerName: "长城 GreatWall",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_AIRCRAFT],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_AIRCRAFT],
     scale: "1/72",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p13",
@@ -232,10 +232,10 @@ const mockList: ProductListItem[] = [
     officialName: "ZGMF-X10A FREEDOM GUNDAM",
     modelNo: "MG 1/100",
     manufacturerName: "万代 Bandai",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_AIRCRAFT],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_AIRCRAFT],
     scale: "1/100",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p14",
@@ -243,19 +243,19 @@ const mockList: ProductListItem[] = [
     officialName: "Sd.Kfz.181 Tiger I",
     modelNo: "PS-002",
     manufacturerName: "MENG",
-    kind: ProductKind.MODEL,
-    modelTypes: [ModelType.MILITARY_TANK],
+    kind: ProductKindEnum.MODEL,
+    modelTypes: [ModelTypeEnum.MILITARY_TANK],
     scale: "1/35",
-    status: ProductStatus.ON_SALE,
+    status: ProductStatusEnum.ON_SALE,
   },
   {
     id: "p15",
     productName: "AK 旧化土套装",
     modelNo: "AK-2092",
     manufacturerName: "AK Interactive",
-    kind: ProductKind.TOOL_SUPPLY,
-    toolType: ToolType.ACCESSORY,
-    status: ProductStatus.ON_SALE,
+    kind: ProductKindEnum.TOOL_SUPPLY,
+    toolType: ToolTypeEnum.ACCESSORY,
+    status: ProductStatusEnum.ON_SALE,
   },
 ];
 
@@ -274,7 +274,7 @@ const filteredList = computed(() => {
     const types = filterModelTypes.value;
     list = list.filter(
       (item) =>
-        item.kind === ProductKind.MODEL &&
+        item.kind === ProductKindEnum.MODEL &&
         (item.modelTypes ?? []).some((t) => types.includes(t)),
     );
   }
@@ -283,7 +283,7 @@ const filteredList = computed(() => {
     const types = filterToolTypes.value;
     list = list.filter(
       (item) =>
-        item.kind === ProductKind.TOOL_SUPPLY &&
+        item.kind === ProductKindEnum.TOOL_SUPPLY &&
         item.toolType != null &&
         types.includes(item.toolType),
     );

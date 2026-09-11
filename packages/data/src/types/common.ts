@@ -1,4 +1,4 @@
-import type { ReviewStatus, SourceType } from '../enums/common';
+﻿import type { ReviewStatusEnum, SourceTypeEnum } from '../enums/common';
 
 /** 主键 ID（SQLite 自增整数） */
 export type Id = number;
@@ -52,7 +52,7 @@ export interface TimestampFields {
 /** 审核相关字段 */
 export interface ReviewFields {
   /** 审核状态 */
-  reviewStatus?: ReviewStatus;
+  reviewStatus?: ReviewStatusEnum;
   /** 审核日期 */
   reviewDate?: DateTimeString;
   /** 审核人 ID */
@@ -71,20 +71,20 @@ export interface ReviewFields {
 export type DataSource = string;
 
 /** 解析数据来源字符串 */
-export function parseDataSource(value?: DataSource): { type?: SourceType; note?: string } {
+export function parseDataSource(value?: DataSource): { type?: SourceTypeEnum; note?: string } {
   if (!value) return {};
   const sep = value.indexOf('|');
   if (sep === -1) {
-    return { type: value as SourceType };
+    return { type: value as SourceTypeEnum };
   }
   return {
-    type: value.substring(0, sep) as SourceType,
+    type: value.substring(0, sep) as SourceTypeEnum,
     note: value.substring(sep + 1) || undefined,
   };
 }
 
 /** 构造数据来源字符串 */
-export function buildDataSource(type: SourceType, note?: string): DataSource {
+export function buildDataSource(type: SourceTypeEnum, note?: string): DataSource {
   if (!note) return type;
   return `${type}|${note}`;
 }

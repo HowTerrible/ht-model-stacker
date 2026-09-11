@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { Permission, ManufacturerSubmissionInput, ProductSubmissionInput } from '@model-stacker/data';
+﻿import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { PermissionEnum, ManufacturerSubmissionInput, ProductSubmissionInput } from '@model-stacker/data';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
@@ -73,7 +73,7 @@ export class SubmissionController {
    * 可按 reviewStatus / keyword 过滤，用于审核工作台展示待处理提交。
    */
   @Get('manufacturers')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   listManufacturers(@Query() query: PageQuery) {
     return this.service.listManufacturerSubmissions(query);
@@ -84,7 +84,7 @@ export class SubmissionController {
    * 可按 reviewStatus / kind / keyword 过滤，用于审核工作台展示待处理提交。
    */
   @Get('products')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   listProducts(@Query() query: PageQuery) {
     return this.service.listProductSubmissions(query);
@@ -96,7 +96,7 @@ export class SubmissionController {
    * 并把合并结果写回 submission.linkedManufacturerId。
    */
   @Post('manufacturers/:id/approve')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   approveManufacturer(@Req() req: AuthedRequest, @Param('id') id: string) {
     return this.service.approveManufacturer(Number(id), req.user!.sub);
@@ -108,7 +108,7 @@ export class SubmissionController {
    * 请求体：{ note?: string } 拒绝原因（选填）。
    */
   @Post('manufacturers/:id/reject')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   rejectManufacturer(@Req() req: AuthedRequest, @Param('id') id: string, @Body() body: { note?: string }) {
     return this.service.rejectManufacturer(Number(id), req.user!.sub, body.note ?? '');
@@ -122,7 +122,7 @@ export class SubmissionController {
    * 请求体：{ manufacturerId?: number } 可选，审核时手动指定厂家。
    */
   @Post('products/:id/approve')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   approveProduct(
     @Req() req: AuthedRequest,
@@ -138,7 +138,7 @@ export class SubmissionController {
    * 请求体：{ note?: string } 拒绝原因（选填）。
    */
   @Post('products/:id/reject')
-  @Roles(Permission.ADMIN)
+  @Roles(PermissionEnum.ADMIN)
   @UseGuards(...AdminGuards)
   rejectProduct(@Req() req: AuthedRequest, @Param('id') id: string, @Body() body: { note?: string }) {
     return this.service.rejectProduct(Number(id), req.user!.sub, body.note ?? '');
