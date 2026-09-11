@@ -230,6 +230,7 @@ model Stack {
   categoryId    Int?
   itemName      String?
   manufacturerName String?
+  modelNo          String?
   wip           Wip?     @relation(fields: [wipId], references: [id], onDelete: SetNull)
   wipId         Int?
   purchasedAt   DateTime @default(now())

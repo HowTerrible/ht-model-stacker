@@ -1,4 +1,5 @@
 ﻿import type { CurrencyEnum } from '../enums/price';
+import type { ProductKindEnum } from '../enums/product';
 import type { PurchaseChannelEnum, StackStatusEnum } from '../enums/stack';
 import type { WipStageEnum } from '../enums/wip';
 import type { DateTimeString, Id, TimestampFields } from './common';
@@ -17,13 +18,15 @@ export interface Stack extends TimestampFields {
   userId: Id;
   /** 关联的资料库产品 ID（不强绑定；资料库无对应产品时留空） */
   productId?: Id;
+  /** 关联产品的种类（仅当关联资料库产品时返回，用于前端按模型/工具辅料筛选） */
+  kind?: ProductKindEnum;
   /** 关联的资料库厂家 ID（不强绑定；不关联产品时可单独选厂家） */
   manufacturerId?: Id;
   /** 所属产品分类 ID（可选，关联 Theme 节点） */
   categoryId?: Id;
-  /** 品名（未关联资料库产品时填写；已关联时可留空） */
+  /** 品名（API 返回解析后的展示名：关联资料库产品则取产品名，否则为自由文本） */
   itemName?: string;
-  /** 厂家 / 品牌名（未关联资料库厂家时填写） */
+  /** 厂家 / 品牌名（API 返回解析后的展示名：关联资料库厂家则取厂家名，否则为自由文本） */
   manufacturerName?: string;
   /** 货号 / 型号（不强绑定；不关联产品时可直接输入） */
   modelNo?: string;

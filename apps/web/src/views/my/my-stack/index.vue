@@ -1,58 +1,44 @@
 ﻿<script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 import {
   CurrencyEnum,
   ProductKindEnum,
   PurchaseChannelEnum,
   StackStatusEnum,
 } from "@model-stacker/data";
+import type { Stack } from "@model-stacker/data";
+import { getStacks, deleteStack } from "@/api/stack";
 import StackForm from "../components/stack-form.vue";
 import {
   channelLabels,
   channelOptions,
   currencySymbols,
-  kindLabels,
-  kindTagTypes,
   statusLabels,
   statusOptions,
   statusTagTypes,
 } from "../components/options";
 
-/** 列表视图模式：list 通栏（卡片占满整行）/ grid 网格（一行多卡片） */
 type ViewMode = "list" | "grid";
-
-/** 产品种类筛选：全部 / 仅模型 / 仅工具辅料 */
 type KindScope = "ALL" | ProductKindEnum;
-
-interface StackListItem {
-  id: string;
-  productName: string;
-  kind: ProductKindEnum;
-  status: StackStatusEnum;
-  purchasedAt: string;
-  purchasePrice?: number;
-  currency: CurrencyEnum;
-  channel?: PurchaseChannelEnum;
-  notes?: string;
-}
 
 const viewMode = ref<ViewMode>("list");
 const keyword = ref("");
-
-/** 产品种类筛选：全部 / 仅模型 / 仅工具辅料 */
 const kindScope = ref<KindScope>("ALL");
-
-/** 折叠面板展开状态 */
-const moreExpanded = ref<string[]>([]);
+const loading = ref(false);
 
 /** 更多筛选条件：状态 / 渠道 / 购买时间范围 */
 const filterStatuses = ref<StackStatusEnum[]>([]);
 const filterChannels = ref<PurchaseChannelEnum[]>([]);
 const purchaseRange = ref<[string, string] | null>(null);
 
-watch([kindScope, filterStatuses, filterChannels, purchaseRange], () => {
-  page.value = 1;
-});
+/** 折叠面板展开状态 */
+const moreExpanded = ref<string[]>([]);
+
+const page = ref(1);
+const pageSize = ref(20);
+const totalCount = ref(0);
+const list = ref<Stack[]>([]);
 
 function resetMoreFilters() {
   filterStatuses.value = [];
@@ -60,199 +46,122 @@ function resetMoreFilters() {
   purchaseRange.value = null;
 }
 
-// TODO 待接入堆积分页查询接口，当前使用本地示例数据演示交互
-const mockList: StackListItem[] = [
-  {
-    id: "s01",
-    productName: "MG 沙扎比 Ver.Ka",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.IN_PROGRESS,
-    purchasedAt: "2026-07-12",
-    purchasePrice: 465,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.TAOBAO,
-    notes: "万代再版购入",
-  },
-  {
-    id: "s02",
-    productName: "RG 强袭自由高达",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.UNSTARTED,
-    purchasedAt: "2026-08-01",
-    purchasePrice: 210,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.PDD,
-  },
-  {
-    id: "s03",
-    productName: "田宫薄刃剪钳 74123",
-    kind: ProductKindEnum.TOOL_SUPPLY,
-    status: StackStatusEnum.FINISHED,
-    purchasedAt: "2026-06-18",
-    purchasePrice: 138,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.JD,
-  },
-  {
-    id: "s04",
-    productName: "郡士油性漆 消光白",
-    kind: ProductKindEnum.TOOL_SUPPLY,
-    status: StackStatusEnum.FINISHED,
-    purchasedAt: "2026-06-20",
-    purchasePrice: 22,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.TAOBAO,
-  },
-  {
-    id: "s05",
-    productName: "HG 高机动扎古 Team Monstre Custom",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.WIP,
-    purchasedAt: "2026-05-02",
-    purchasePrice: 95,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.XIANYU,
-    notes: "已转烂尾记录",
-  },
-  {
-    id: "s06",
-    productName: "RG 沙扎比",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.UNSTARTED,
-    purchasedAt: "2026-08-10",
-    purchasePrice: 268,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.TAOBAO,
-    notes: "预售等待发货",
-  },
-  {
-    id: "s07",
-    productName: "GSI 水性漆套装 12 色",
-    kind: ProductKindEnum.TOOL_SUPPLY,
-    status: StackStatusEnum.IN_PROGRESS,
-    purchasedAt: "2026-07-28",
-    purchasePrice: 168,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.JD,
-  },
-  {
-    id: "s08",
-    productName: "M.S.G 重武装套件",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.SOLD,
-    purchasedAt: "2026-04-15",
-    purchasePrice: 3200,
-    currency: CurrencyEnum.JPY,
-    channel: PurchaseChannelEnum.OVERSEAS,
-    notes: "已转让出坑",
-  },
-  {
-    id: "s09",
-    productName: "水口刀 + 打磨海绵组合",
-    kind: ProductKindEnum.TOOL_SUPPLY,
-    status: StackStatusEnum.FINISHED,
-    purchasedAt: "2026-05-30",
-    purchasePrice: 45.5,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.PDD,
-  },
-  {
-    id: "s10",
-    productName: "MG 主天使高达",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.FINISHED,
-    purchasedAt: "2026-03-21",
-    purchasePrice: 235,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.OFFLINE,
-    notes: "店庆购入",
-  },
-  {
-    id: "s11",
-    productName: "喷笔 + 龟泵套装",
-    kind: ProductKindEnum.TOOL_SUPPLY,
-    status: StackStatusEnum.UNSTARTED,
-    purchasedAt: "2026-07-05",
-    purchasePrice: 520,
-    currency: CurrencyEnum.HKD,
-    channel: PurchaseChannelEnum.OVERSEAS,
-  },
-  {
-    id: "s12",
-    productName: "HG 苍白骑士 D型",
-    kind: ProductKindEnum.MODEL,
-    status: StackStatusEnum.UNSTARTED,
-    purchasedAt: "2026-08-18",
-    purchasePrice: 120,
-    currency: CurrencyEnum.CNY,
-    channel: PurchaseChannelEnum.XIANYU,
-    notes: "二手几乎全新",
-  },
-];
+watch([kindScope, filterStatuses, filterChannels, purchaseRange], () => {
+  page.value = 1;
+});
 
-const page = ref(1);
-const pageSize = ref(10);
+// ---------------------------------------------------------------------------
+// 后端分页查询
+// ---------------------------------------------------------------------------
 
-/** 关键字 + 种类 + 更多条件过滤后的全量结果 */
+async function fetchList() {
+  loading.value = true;
+  try {
+    const res = await getStacks({
+      keyword: keyword.value || undefined,
+      status: filterStatuses.value.length === 1 ? filterStatuses.value[0] : undefined,
+      startDate: purchaseRange.value?.[0] || undefined,
+      endDate: purchaseRange.value?.[1] || undefined,
+      page: page.value,
+      pageSize: pageSize.value,
+    });
+    list.value = res.items;
+    totalCount.value = res.total;
+  } catch (e) {
+    ElMessage.error((e as Error).message || "加载失败");
+  } finally {
+    loading.value = false;
+  }
+}
+
+/**
+ * 前端二次过滤：种类 / 渠道。
+ * 种类仅能按「已关联资料库产品」的 kind 判断（未关联的自由文本无种类，
+ * 只出现在「全部」下）；渠道为精确匹配。
+ */
 const filteredList = computed(() => {
-  let list = mockList;
+  let result = list.value;
+
   if (kindScope.value !== "ALL") {
-    list = list.filter((item) => item.kind === kindScope.value);
+    result = result.filter((item) => item.kind === kindScope.value);
   }
-  if (filterStatuses.value.length) {
-    const statuses = filterStatuses.value;
-    list = list.filter((item) => statuses.includes(item.status));
-  }
+
   if (filterChannels.value.length) {
     const channels = filterChannels.value;
-    list = list.filter(
-      (item) => !!item.channel && channels.includes(item.channel),
-    );
+    result = result.filter((item) => !!item.channel && channels.includes(item.channel));
   }
-  // purchasedAt 为 YYYY-MM-DD 格式，字符串比较即为时间先后
-  const [dateFrom, dateTo] = purchaseRange.value ?? [];
-  if (dateFrom) {
-    list = list.filter((item) => item.purchasedAt >= dateFrom);
-  }
-  if (dateTo) {
-    list = list.filter((item) => item.purchasedAt <= dateTo);
-  }
-  const kw = keyword.value.trim().toLowerCase();
-  if (kw) {
-    list = list.filter((item) =>
-      `${item.productName} ${item.notes ?? ""}`.toLowerCase().includes(kw),
-    );
-  }
-  return list;
+
+  return result;
 });
-
-const total = computed(() => filteredList.value.length);
-
-watch(total, (value) => {
-  const maxPage = Math.max(1, Math.ceil(value / pageSize.value));
-  if (page.value > maxPage) page.value = 1;
-});
-
-const pagedList = computed(() =>
-  filteredList.value.slice(
-    (page.value - 1) * pageSize.value,
-    page.value * pageSize.value,
-  ),
-);
 
 function handleSearch() {
   page.value = 1;
+  fetchList();
 }
+
+watch(page, () => fetchList());
+
+onMounted(() => fetchList());
+
+// ---------------------------------------------------------------------------
+// 新增 / 编辑
+// ---------------------------------------------------------------------------
 
 const formVisible = ref(false);
+const editingStackId = ref<number | undefined>(undefined);
 
-function handleSaved() {
-  handleSearch();
+function openCreate() {
+  editingStackId.value = undefined;
+  formVisible.value = true;
 }
 
-function priceText(item: StackListItem): string {
+function openEdit(stack: Stack) {
+  editingStackId.value = stack.id;
+  formVisible.value = true;
+}
+
+function handleSaved() {
+  fetchList();
+}
+
+function handleDeleted() {
+  fetchList();
+}
+
+// ---------------------------------------------------------------------------
+// 删除
+// ---------------------------------------------------------------------------
+
+async function handleDelete(stack: Stack) {
+  try {
+    await ElMessageBox.confirm(
+      `确定删除堆积「${stack.itemName ?? "未命名"}」？删除后不可恢复。`,
+      "删除确认",
+      { confirmButtonText: "删除", cancelButtonText: "取消", type: "warning" },
+    );
+  } catch {
+    return;
+  }
+  await deleteStack(stack.id);
+  ElMessage.success("删除成功");
+  fetchList();
+}
+
+// ---------------------------------------------------------------------------
+// 展示
+// ---------------------------------------------------------------------------
+
+function displayName(item: Stack): string {
+  return item.itemName ?? "未命名";
+}
+
+function priceText(item: Stack): string {
   if (item.purchasePrice == null) return "--";
-  return `${currencySymbols[item.currency]}${item.purchasePrice.toFixed(2)}`;
+  return `${currencySymbols[item.currency] ?? ""}${item.purchasePrice.toFixed(2)}`;
+}
+
+function dateText(item: Stack): string {
+  return item.purchasedAt ?? "--";
 }
 </script>
 
@@ -274,9 +183,7 @@ function priceText(item: StackListItem): string {
           <el-radio-group v-model="kindScope">
             <el-radio-button value="ALL">全部</el-radio-button>
             <el-radio-button :value="ProductKindEnum.MODEL">仅模型</el-radio-button>
-            <el-radio-button :value="ProductKindEnum.TOOL_SUPPLY"
-              >仅工具辅料</el-radio-button
-            >
+            <el-radio-button :value="ProductKindEnum.TOOL_SUPPLY">仅工具辅料</el-radio-button>
           </el-radio-group>
         </div>
 
@@ -335,88 +242,103 @@ function priceText(item: StackListItem): string {
       </div>
     </header>
 
-    <div v-if="pagedList.length" class="card-list" :class="viewMode">
-      <template v-if="viewMode === 'list'">
-        <article
-          v-for="item in pagedList"
-          :key="item.id"
-          class="stack-card row"
-        >
-          <div class="row-info">
+    <div v-loading="loading">
+      <div v-if="filteredList.length" class="card-list" :class="viewMode">
+        <template v-if="viewMode === 'list'">
+          <article
+            v-for="item in filteredList"
+            :key="item.id"
+            class="stack-card row"
+            @click="openEdit(item)"
+          >
+            <div class="row-info">
+              <div class="card-head">
+                <h4 class="name">{{ displayName(item) }}</h4>
+                <el-tag size="small" :type="statusTagTypes[item.status]">
+                  {{ statusLabels[item.status] }}
+                </el-tag>
+              </div>
+              <p class="meta">
+                {{ dateText(item) }}
+                <span v-if="item.channel"> · {{ channelLabels[item.channel] }}</span>
+                <span v-if="item.modelNo"> · 货号：{{ item.modelNo }}</span>
+                <span v-if="item.notes"> · {{ item.notes }}</span>
+              </p>
+            </div>
+            <div class="row-actions">
+              <span class="price">{{ priceText(item) }}</span>
+              <el-button
+                type="danger"
+                size="small"
+                text
+                @click.stop="handleDelete(item)"
+              >
+                删除
+              </el-button>
+            </div>
+          </article>
+        </template>
+
+        <template v-else>
+          <article
+            v-for="item in filteredList"
+            :key="item.id"
+            class="stack-card col"
+            @click="openEdit(item)"
+          >
             <div class="card-head">
-              <h4 class="name">{{ item.productName }}</h4>
-              <el-tag size="small" :type="kindTagTypes[item.kind]">
-                {{ kindLabels[item.kind] }}
-              </el-tag>
+              <h4 class="name">{{ displayName(item) }}</h4>
+            </div>
+            <div class="tags">
               <el-tag size="small" :type="statusTagTypes[item.status]">
                 {{ statusLabels[item.status] }}
               </el-tag>
             </div>
             <p class="meta">
-              {{ item.purchasedAt }}
-              <span v-if="item.channel">
-                · {{ channelLabels[item.channel] }}</span
-              >
-              <span v-if="item.notes"> · {{ item.notes }}</span>
+              {{ dateText(item) }}
+              <span v-if="item.channel"> · {{ channelLabels[item.channel] }}</span>
             </p>
-          </div>
-          <span class="price">{{ priceText(item) }}</span>
-        </article>
-      </template>
+            <p v-if="item.notes" class="notes">{{ item.notes }}</p>
+            <div class="col-footer">
+              <span class="price">{{ priceText(item) }}</span>
+              <el-button
+                type="danger"
+                size="small"
+                text
+                @click.stop="handleDelete(item)"
+              >
+                删除
+              </el-button>
+            </div>
+          </article>
+        </template>
+      </div>
 
-      <template v-else>
-        <article
-          v-for="item in pagedList"
-          :key="item.id"
-          class="stack-card col"
-        >
-          <div class="card-head">
-            <h4 class="name">{{ item.productName }}</h4>
-          </div>
-          <div class="tags">
-            <el-tag size="small" :type="kindTagTypes[item.kind]">
-              {{ kindLabels[item.kind] }}
-            </el-tag>
-            <el-tag size="small" :type="statusTagTypes[item.status]">
-              {{ statusLabels[item.status] }}
-            </el-tag>
-          </div>
-          <p class="meta">
-            {{ item.purchasedAt }}
-            <span v-if="item.channel">
-              · {{ channelLabels[item.channel] }}</span
-            >
-          </p>
-          <p v-if="item.notes" class="notes">{{ item.notes }}</p>
-          <span class="price">{{ priceText(item) }}</span>
-        </article>
-      </template>
+      <el-empty v-else description="暂无堆积记录" />
     </div>
-
-    <el-empty v-else description="暂无堆积记录" />
 
     <footer class="page-footer">
       <el-pagination
         v-model:current-page="page"
         v-model:page-size="pageSize"
-        :total="total"
+        :total="totalCount"
         layout="total, prev, pager, next"
         background
       />
 
       <div class="footer-actions">
-        <el-button type="primary" @click="formVisible = true"
-          >新增堆积</el-button
-        >
+        <el-button type="primary" @click="openCreate">新增堆积</el-button>
       </div>
     </footer>
 
-    <!-- 移动端：悬浮于右下角的新增按钮 -->
-    <el-button type="primary" class="fab-add" @click="formVisible = true">
-      +
-    </el-button>
+    <el-button type="primary" class="fab-add" @click="openCreate">+</el-button>
 
-    <StackForm v-model="formVisible" @saved="handleSaved" />
+    <StackForm
+      v-model="formVisible"
+      :stack-id="editingStackId"
+      @saved="handleSaved"
+      @deleted="handleDeleted"
+    />
   </section>
 </template>
 
@@ -504,6 +426,12 @@ function priceText(item: StackListItem): string {
   padding: 12px 14px;
   background: var(--app-surface-color, #fff);
   border-radius: 8px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.stack-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .stack-card.row {
@@ -549,10 +477,18 @@ function priceText(item: StackListItem): string {
   white-space: nowrap;
 }
 
-.stack-card.col .price {
-  display: block;
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.col-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 8px;
-  text-align: right;
 }
 
 .page-footer {
@@ -566,12 +502,10 @@ function priceText(item: StackListItem): string {
   border-top: 1px solid var(--el-border-color-lighter, #ebeef5);
 }
 
-/* 移动端悬浮新增按钮，桌面端隐藏 */
 .fab-add {
   display: none;
 }
 
-/* 移动端保持分页（不使用下拉加载），footer 改纵向排布，新增按钮改为右下角悬浮 */
 @media (max-width: 767px) {
   .page-footer {
     flex-direction: column;

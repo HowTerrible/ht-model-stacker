@@ -1,22 +1,22 @@
 import type { Stack } from '@model-stacker/data';
+import { request } from './client';
 
 export interface ManufacturerOption {
-  /** 数据库中存在的厂家 ID；用户新增选项时无 id，仅保留 name */
   id?: number;
   name: string;
 }
 
 export interface ProductOption {
-  /** 数据库中存在的产品 ID；用户新增选项时无 id，仅保留 name */
   id?: number;
   name: string;
+  modelNo?: string;
 }
 
 export interface SaveStackPayload {
   /** 厂家：选中的后端厂家为 ID；用户新增选项为名称 */
-  manufacturer: number | string;
+  manufacturer?: number | string;
   /** 产品：选中的后端产品为 ID；用户新增选项为名称 */
-  product: number | string;
+  product?: number | string;
   /** 货号 */
   modelNo?: string;
   /** 堆积位置 */
@@ -29,73 +29,65 @@ export interface SaveStackPayload {
   status?: string;
 }
 
-/** 模拟网络延迟 */
-function delay(ms = 300): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export interface StackListResult {
+  items: Stack[];
+  total: number;
 }
 
-const mockManufacturers = [
-  { id: 1, name: '万代' },
-  { id: 2, name: '田宫' },
-  { id: 3, name: '郡士' },
-  { id: 4, name: 'GSI' },
-  { id: 5, name: '寿屋' },
-  { id: 6, name: 'Skil' },
-  { id: 7, name: 'M.S.G' },
-];
-
-const mockProducts = [
-  { id: 1, name: 'MG 沙扎比 Ver.Ka' },
-  { id: 2, name: 'RG 强袭自由高达' },
-  { id: 3, name: '田宫薄刃剪钳' },
-  { id: 4, name: '郡士油性漆 消光白' },
-  { id: 5, name: 'HG 高机动扎古' },
-  { id: 6, name: 'GSI 水性漆套装 12 色' },
-  { id: 7, name: 'M.S.G 重武装套件' },
-  { id: 8, name: '喷笔 + 龟泵套装' },
-];
-
-/**
- * 关键字搜索厂家（当前为 mock 实现）
- * TODO: 后端就绪后替换为真实接口调用，例如：
- *   request<Manufacturer[]>('/manufacturers', { method: 'GET', ... });
- */
-export async function searchManufacturers(keyword: string): Promise<ManufacturerOption[]> {
-  await delay();
-  const kw = keyword.trim().toLowerCase();
-  if (!kw) return [];
-  return mockManufacturers.filter((m) => m.name.toLowerCase().includes(kw));
+export interface StackListParams {
+  status?: string;
+  keyword?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  pageSize?: number;
 }
 
-/**
- * 关键字搜索产品（当前为 mock 实现）
- * TODO: 后端就绪后替换为真实接口调用，例如：
- *   request<Product[]>('/products', { method: 'GET', ... });
- */
-export async function searchProducts(keyword: string): Promise<ProductOption[]> {
-  await delay();
-  const kw = keyword.trim().toLowerCase();
-  if (!kw) return [];
-  return mockProducts.filter((m) => m.name.toLowerCase().includes(kw));
+/** 按名称模糊搜索已审核通过的厂家 */
+export function searchManufacturers(keyword: string): Promise<ManufacturerOption[]> {
+  if (!keyword.trim()) return Promise.resolve([]);
+  const qs = new URLSearchParams({ keyword, pageSize: '20' }).toString();
+  return request<ManufacturerOption[]>(`/manufacturers/search?${qs}`);
 }
 
-/**
- * 新建 / 更新堆积记录
- *  - create 时：新增的厂家 / 产品传入 name，后端会以该名称发起资料补充申请
- *  - update 时：厂家、产品、货号不可修改
- * TODO: 后端就绪后替换为真实接口调用
- */
-export async function saveStack(
-  payload: SaveStackPayload,
-  id?: number,
-): Promise<Stack> {
-  await delay();
-  // TODO 接入真实堆积接口
-  return { id: id ?? 1 } as Stack;
+/** 按名称模糊搜索已审核通过的产品 */
+export function searchProducts(keyword: string): Promise<ProductOption[]> {
+  if (!keyword.trim()) return Promise.resolve([]);
+  const qs = new URLSearchParams({ keyword, pageSize: '20' }).toString();
+  return request<ProductOption[]>(`/products/search?${qs}`);
 }
 
-/** 删除堆积记录（当前为 mock 实现） */
-export async function deleteStack(id: number): Promise<void> {
-  await delay();
-  // TODO 接入真实堆积接口
+/** 查询当前用户的堆积列表（分页） */
+export function getStacks(params: StackListParams = {}): Promise<StackListResult> {
+  const clean: Record<string, string> = {};
+  (Object.keys(params) as Array<keyof StackListParams>).forEach((k) => {
+    const v = params[k];
+    if (v !== undefined && v !== null && String(v) !== '') clean[k] = String(v);
+  });
+  const qs = new URLSearchParams(clean).toString();
+  return request<StackListResult>(`/stacks?${qs}`);
+}
+
+/** 获取单条堆积详情 */
+export function getStack(id: number): Promise<Stack> {
+  return request<Stack>(`/stacks/${id}`);
+}
+
+/** 新建堆积记录（传 id 时为更新） */
+export async function saveStack(payload: SaveStackPayload, id?: number): Promise<Stack> {
+  if (id) {
+    return request<Stack>(`/stacks/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(payload),
+    });
+  }
+  return request<Stack>('/stacks', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+/** 删除堆积记录 */
+export function deleteStack(id: number): Promise<void> {
+  return request<void>(`/stacks/${id}`, { method: 'DELETE' });
 }

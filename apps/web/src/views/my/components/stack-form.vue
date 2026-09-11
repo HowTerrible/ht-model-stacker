@@ -7,6 +7,7 @@ import { CurrencyEnum, PurchaseChannelEnum, StackStatusEnum } from "@model-stack
 import { channelOptions, currencyOptions, statusOptions } from "./options";
 import {
   deleteStack,
+  getStack,
   saveStack,
   searchManufacturers,
   searchProducts,
@@ -99,26 +100,71 @@ async function handleProductSearch(query: string) {
   }
 }
 
+/** 打开弹窗时：新增模式清空表单；编辑模式拉取既有堆积并回填 */
+const dialogError = ref("");
+
 watch(
   () => props.modelValue,
   (opened) => {
     if (!opened) return;
+    dialogError.value = "";
     Object.assign(form, createEmptyForm());
     if (props.stackId != null) {
-      // TODO 编辑模式：根据 props.stackId 获取既有堆积数据回填
-      // 厂家 / 产品 / 货号此时应回填原值且不可修改
-      form.manufacturer = 1;
-      form.product = 1;
-      form.modelNo = "MOCK-001";
+      loadForEdit(props.stackId);
     }
   },
 );
 
-async function handleSave() {
-  const valid = await formRef.value?.validate().catch(() => false);
-  if (!valid) return;
+async function loadForEdit(id: number | string) {
+  try {
+    const stack = await getStack(Number(id));
+    form.manufacturer = stack.manufacturerId ?? stack.manufacturerName ?? "";
+    form.product = stack.productId ?? stack.itemName ?? "";
+    form.modelNo = stack.modelNo ?? "";
+    form.purchasedAt = stack.purchasedAt ?? "";
+    form.purchasePrice = stack.purchasePrice;
+    form.currency = stack.currency;
+    form.channel = stack.channel;
+    form.status = stack.status;
+    form.location = stack.location ?? "";
+    form.notes = stack.notes ?? "";
 
-  console.log({
+    // 关联资料库的厂家/产品：把名称注入选项列表，保证禁用态下拉能显示原文
+    if (stack.manufacturerId != null) {
+      manufacturerOptions.value = [
+        {
+          id: stack.manufacturerId,
+          name: stack.manufacturerName ?? "",
+        },
+      ];
+    }
+    if (stack.productId != null) {
+      productOptions.value = [
+        {
+          id: stack.productId,
+          name: stack.itemName ?? "",
+        },
+      ];
+    }
+  } catch (e) {
+    dialogError.value = (e as Error).message || "加载堆积失败";
+  }
+}
+
+function buildPayload() {
+  if (isEdit.value) {
+    // 编辑模式只提交可修改字段（厂家 / 产品 / 货号不可修改）
+    return {
+      purchasedAt: form.purchasedAt,
+      purchasePrice: form.purchasePrice,
+      currency: form.currency,
+      channel: form.channel,
+      status: form.status,
+      location: form.location,
+      notes: form.notes,
+    };
+  }
+  return {
     manufacturer: form.manufacturer,
     product: form.product,
     modelNo: form.modelNo,
@@ -129,23 +175,14 @@ async function handleSave() {
     status: form.status,
     location: form.location,
     notes: form.notes,
-  });
+  };
+}
 
-  await saveStack(
-    {
-      manufacturer: form.manufacturer,
-      product: form.product,
-      modelNo: form.modelNo,
-      purchasedAt: form.purchasedAt,
-      purchasePrice: form.purchasePrice,
-      currency: form.currency,
-      channel: form.channel,
-      status: form.status,
-      location: form.location,
-      notes: form.notes,
-    },
-    props.stackId,
-  );
+async function handleSave() {
+  const valid = await formRef.value?.validate().catch(() => false);
+  if (!valid) return;
+
+  await saveStack(buildPayload(), props.stackId);
   ElMessage.success(isEdit.value ? "保存成功" : "新增成功");
   emit("saved");
   visible.value = false;
@@ -157,18 +194,7 @@ async function handleSaveAndNext() {
   const valid = await formRef.value?.validate().catch(() => false);
   if (!valid) return;
 
-  await saveStack({
-    manufacturer: form.manufacturer,
-    product: form.product,
-    modelNo: form.modelNo,
-    purchasedAt: form.purchasedAt,
-    purchasePrice: form.purchasePrice,
-    currency: form.currency,
-    channel: form.channel,
-    status: form.status,
-    location: form.location,
-    notes: form.notes,
-  });
+  await saveStack(buildPayload());
   ElMessage.success("已保存，可录入下一条");
   emit("saved");
   formRef.value?.clearValidate();
@@ -204,6 +230,14 @@ async function handleDelete() {
     class="stack-form-dialog"
     width="560px"
   >
+    <el-alert
+      v-if="dialogError"
+      :title="dialogError"
+      type="error"
+      show-icon
+      :closable="false"
+      class="dialog-error"
+    />
     <el-form ref="formRef" :model="form" :rules="rules" label-width="88px">
       <el-form-item label="厂家" prop="manufacturer">
         <el-select
@@ -358,6 +392,10 @@ async function handleDelete() {
 <style>
 .stack-form-dialog {
   max-width: calc(100vw - 24px);
+}
+
+.stack-form-dialog .dialog-error {
+  margin-bottom: 12px;
 }
 
 .stack-form-dialog .dialog-footer {
