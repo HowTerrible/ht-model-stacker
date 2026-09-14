@@ -10,6 +10,7 @@ import { SubmissionModule } from './submission/submission.module';
 import { StackModule } from './stack/stack.module';
 import { ManufacturerSearchModule } from './manufacturer/manufacturer-search.module';
 import { ProductSearchModule } from './product/product-search.module';
+import { ShopSearchModule } from './shop/shop-search.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ProductSearchModule } from './product/product-search.module';
     StackModule,
     ManufacturerSearchModule,
     ProductSearchModule,
+    ShopSearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_INTERCEPTOR, useClass: TransformInterceptor }],

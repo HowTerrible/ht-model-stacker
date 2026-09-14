@@ -11,8 +11,11 @@ import type { DateTimeString, Id, TimestampFields } from './common';
  * 堆积与资料库不强绑定：
  * - 资料库中有对应产品时，通过 productId 建立关联；
  * - 资料库中没有时，直接填写 itemName / manufacturerName 等自由信息，
- *   并可创建 DataSupplementRequest 一键申请补充资料，审核建库后自动回填绑定。
+ *   并可创建 DataSupplementRequest 一键申请补充资料，审核建库后自动回填绑定；
+ * - 购买店铺同理：资料库有对应店铺时通过 shopId 关联，否则直接保存 shopName 自由文本。
  */
+export type StackLiking = 1 | 2 | 3 | 4 | 5;
+
 export interface Stack extends TimestampFields {
   id: Id;
   userId: Id;
@@ -30,13 +33,29 @@ export interface Stack extends TimestampFields {
   manufacturerName?: string;
   /** 货号 / 型号（不强绑定；不关联产品时可直接输入） */
   modelNo?: string;
+  /** 订单号 */
+  orderNo?: string;
   /** 购买时间 */
   purchasedAt?: DateTimeString;
   /** 购买价格 */
   purchasePrice?: number;
   currency: CurrencyEnum;
+  /** 发货时间 */
+  shippedAt?: DateTimeString;
+  /** 收货时间 */
+  receivedAt?: DateTimeString;
+  /** 快递公司 */
+  expressCompany?: string;
+  /** 快递单号 */
+  trackingNo?: string;
+  /** 购买店铺：关联的资料库店铺 ID（不强绑定；资料库无对应店铺时留空） */
+  shopId?: Id;
+  /** 购买店铺名（API 返回解析后的展示名：关联资料库店铺则取店铺名，否则为自由文本） */
+  shopName?: string;
   channel?: PurchaseChannelEnum;
   status: StackStatusEnum;
+  /** 喜爱程度（1-5，星标评分） */
+  likeness?: StackLiking;
   /** 完成进度（阶段，开工后填写，枚举同 WipStageEnum） */
   stage?: WipStageEnum;
   /** 关联的烂尾记录 ID（该堆积烂尾后对应 Wip） */

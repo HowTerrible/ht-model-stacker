@@ -230,18 +230,34 @@ model Stack {
   productId     Int?
   manufacturer  Manufacturer?   @relation(fields: [manufacturerId], references: [id], onDelete: SetNull)
   manufacturerId Int?
+  shop          Shop?           @relation(fields: [shopId], references: [id], onDelete: SetNull)
+  shopId        Int?
+  // 购买店铺名称（不强绑定；不关联资料库店铺时保存自由文本）
+  shopName      String?
   category      Theme?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   categoryId    Int?
   itemName      String?
   manufacturerName String?
   modelNo          String?
+  // 订单号
+  orderNo          String?
   wip           Wip?     @relation(fields: [wipId], references: [id], onDelete: SetNull)
   wipId         Int?
   purchasedAt   DateTime @default(now())
   purchasePrice Float?
   currency      String   @default("CNY")
+  // 发货时间
+  shippedAt     DateTime?
+  // 收货时间
+  receivedAt    DateTime?
+  // 快递公司
+  expressCompany String?
+  // 快递单号
+  trackingNo    String?
   channel       String?
   status        String   @default("UNSTARTED")
+  // 喜爱程度（1-5）
+  likeness      Int?
   stage         String?
   location      String?
   notes         String?
@@ -252,6 +268,7 @@ model Stack {
   @@index([userId, purchasedAt])
   @@index([productId])
   @@index([manufacturerId])
+  @@index([shopId])
   @@index([categoryId])
   @@index([wipId])
   @@map("stack")
@@ -356,6 +373,7 @@ model Shop {
   platform      String   @default("OTHER")
   // 数据更新时间（展示该店铺数据是否过期）
   dataUpdatedAt DateTime
+  stacks        Stack[]
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 

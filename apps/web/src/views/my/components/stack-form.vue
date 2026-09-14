@@ -11,8 +11,10 @@ import {
   saveStack,
   searchManufacturers,
   searchProducts,
+  searchShops,
   type ManufacturerOption,
   type ProductOption,
+  type ShopOption,
 } from "@/api/stack";
 
 const props = defineProps<{
@@ -43,11 +45,18 @@ interface StackFormModel {
   manufacturer: number | string;
   product: number | string;
   modelNo: string;
+  orderNo: string;
   purchasedAt: string;
   purchasePrice?: number;
   currency: CurrencyEnum;
+  shippedAt: string;
+  receivedAt: string;
+  expressCompany: string;
+  trackingNo: string;
+  shop: number | string;
   channel?: PurchaseChannelEnum;
   status: StackStatusEnum;
+  likeness: number;
   location: string;
   notes: string;
 }
@@ -56,11 +65,18 @@ const createEmptyForm = (): StackFormModel => ({
   manufacturer: "",
   product: "",
   modelNo: "",
+  orderNo: "",
   purchasedAt: "",
   purchasePrice: undefined,
   currency: CurrencyEnum.CNY,
+  shippedAt: "",
+  receivedAt: "",
+  expressCompany: "",
+  trackingNo: "",
+  shop: "",
   channel: undefined,
   status: StackStatusEnum.UNSTARTED,
+  likeness: 0,
   location: "",
   notes: "",
 });
@@ -100,6 +116,19 @@ async function handleProductSearch(query: string) {
   }
 }
 
+/* ---------- 购买店铺远程搜索 ---------- */
+const shopLoading = ref(false);
+const shopOptions = ref<ShopOption[]>([]);
+
+async function handleShopSearch(query: string) {
+  shopLoading.value = true;
+  try {
+    shopOptions.value = await searchShops(query);
+  } finally {
+    shopLoading.value = false;
+  }
+}
+
 /** 打开弹窗时：新增模式清空表单；编辑模式拉取既有堆积并回填 */
 const dialogError = ref("");
 
@@ -121,11 +150,18 @@ async function loadForEdit(id: number | string) {
     form.manufacturer = stack.manufacturerId ?? stack.manufacturerName ?? "";
     form.product = stack.productId ?? stack.itemName ?? "";
     form.modelNo = stack.modelNo ?? "";
+    form.orderNo = stack.orderNo ?? "";
     form.purchasedAt = stack.purchasedAt ?? "";
     form.purchasePrice = stack.purchasePrice;
     form.currency = stack.currency;
+    form.shippedAt = stack.shippedAt ?? "";
+    form.receivedAt = stack.receivedAt ?? "";
+    form.expressCompany = stack.expressCompany ?? "";
+    form.trackingNo = stack.trackingNo ?? "";
+    form.shop = stack.shopId ?? stack.shopName ?? "";
     form.channel = stack.channel;
     form.status = stack.status;
+    form.likeness = stack.likeness ?? 0;
     form.location = stack.location ?? "";
     form.notes = stack.notes ?? "";
 
@@ -146,6 +182,15 @@ async function loadForEdit(id: number | string) {
         },
       ];
     }
+    // 关联资料库的店铺：把名称注入选项列表，保证下拉能显示原文
+    if (stack.shopId != null) {
+      shopOptions.value = [
+        {
+          id: stack.shopId,
+          name: stack.shopName ?? "",
+        },
+      ];
+    }
   } catch (e) {
     dialogError.value = (e as Error).message || "加载堆积失败";
   }
@@ -155,11 +200,18 @@ function buildPayload() {
   if (isEdit.value) {
     // 编辑模式只提交可修改字段（厂家 / 产品 / 货号不可修改）
     return {
+      orderNo: form.orderNo,
       purchasedAt: form.purchasedAt,
       purchasePrice: form.purchasePrice,
       currency: form.currency,
+      shippedAt: form.shippedAt,
+      receivedAt: form.receivedAt,
+      expressCompany: form.expressCompany,
+      trackingNo: form.trackingNo,
+      shop: form.shop,
       channel: form.channel,
       status: form.status,
+      likeness: form.likeness || undefined,
       location: form.location,
       notes: form.notes,
     };
@@ -168,11 +220,18 @@ function buildPayload() {
     manufacturer: form.manufacturer,
     product: form.product,
     modelNo: form.modelNo,
+    orderNo: form.orderNo,
     purchasedAt: form.purchasedAt,
     purchasePrice: form.purchasePrice,
     currency: form.currency,
+    shippedAt: form.shippedAt,
+    receivedAt: form.receivedAt,
+    expressCompany: form.expressCompany,
+    trackingNo: form.trackingNo,
+    shop: form.shop,
     channel: form.channel,
     status: form.status,
+    likeness: form.likeness || undefined,
     location: form.location,
     notes: form.notes,
   };
@@ -293,6 +352,12 @@ async function handleDelete() {
           placeholder="选填，如：14308"
         />
       </el-form-item>
+      <el-form-item label="订单号">
+        <el-input
+          v-model="form.orderNo"
+          placeholder="选填，如：TAOBAO20260101123456"
+        />
+      </el-form-item>
       <el-form-item label="购买时间">
         <el-date-picker
           v-model="form.purchasedAt"
@@ -322,6 +387,61 @@ async function handleDelete() {
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="发货时间">
+        <el-date-picker
+          v-model="form.shippedAt"
+          type="date"
+          value-format="YYYY-MM-DD"
+          placeholder="选填"
+          style="width: 100%"
+        />
+      </el-form-item>
+      <el-form-item label="收货时间">
+        <el-date-picker
+          v-model="form.receivedAt"
+          type="date"
+          value-format="YYYY-MM-DD"
+          placeholder="选填"
+          style="width: 100%"
+        />
+      </el-form-item>
+      <el-form-item label="快递公司">
+        <el-input
+          v-model="form.expressCompany"
+          placeholder="选填，如：中通快递"
+        />
+      </el-form-item>
+      <el-form-item label="快递单号">
+        <el-input
+          v-model="form.trackingNo"
+          placeholder="选填"
+        />
+      </el-form-item>
+      <el-form-item label="购买店铺">
+        <el-select
+          v-model="form.shop"
+          filterable
+          remote
+          allow-create
+          default-first-option
+          reserve-keyword
+          clearable
+          :remote-method="handleShopSearch"
+          :loading="shopLoading"
+          placeholder="店铺，可直接新增, 按回车确认"
+          style="width: 100%"
+        >
+          <el-option
+            v-for="opt in shopOptions"
+            :key="opt.id ?? opt.name"
+            :label="opt.name"
+            :value="opt.id ?? opt.name"
+          />
+          <template #empty>
+            <span>未搜索到结果，可按回车直接新增</span>
+          </template>
+        </el-select>
+      </el-form-item>
       <el-form-item label="购买渠道">
         <el-select v-model="form.channel" clearable placeholder="未选择">
           <el-option
@@ -347,6 +467,9 @@ async function handleDelete() {
             :value="opt.value"
           />
         </el-select>
+      </el-form-item>
+      <el-form-item label="喜爱程度">
+        <el-rate v-model="form.likeness" :max="5" clearable />
       </el-form-item>
       <el-form-item label="备注">
         <el-input

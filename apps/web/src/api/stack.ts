@@ -12,6 +12,11 @@ export interface ProductOption {
   modelNo?: string;
 }
 
+export interface ShopOption {
+  id?: number;
+  name: string;
+}
+
 export interface SaveStackPayload {
   /** 厂家：选中的后端厂家为 ID；用户新增选项为名称 */
   manufacturer?: number | string;
@@ -19,14 +24,28 @@ export interface SaveStackPayload {
   product?: number | string;
   /** 货号 */
   modelNo?: string;
+  /** 订单号 */
+  orderNo?: string;
+  /** 购买店铺：选中的后端店铺为 ID；用户新增选项为名称 */
+  shop?: number | string;
   /** 堆积位置 */
   location?: string;
   notes?: string;
   purchasedAt?: string;
   purchasePrice?: number;
   currency?: string;
+  /** 发货时间 */
+  shippedAt?: string;
+  /** 收货时间 */
+  receivedAt?: string;
+  /** 快递公司 */
+  expressCompany?: string;
+  /** 快递单号 */
+  trackingNo?: string;
   channel?: string;
   status?: string;
+  /** 喜爱程度（1-5） */
+  likeness?: number;
 }
 
 export interface StackListResult {
@@ -55,6 +74,13 @@ export function searchProducts(keyword: string): Promise<ProductOption[]> {
   if (!keyword.trim()) return Promise.resolve([]);
   const qs = new URLSearchParams({ keyword, pageSize: '20' }).toString();
   return request<ProductOption[]>(`/products/search?${qs}`);
+}
+
+/** 按名称 / 外号模糊搜索店铺 */
+export function searchShops(keyword: string): Promise<ShopOption[]> {
+  if (!keyword.trim()) return Promise.resolve([]);
+  const qs = new URLSearchParams({ keyword, pageSize: '20' }).toString();
+  return request<ShopOption[]>(`/shops/search?${qs}`);
 }
 
 /** 查询当前用户的堆积列表（分页） */

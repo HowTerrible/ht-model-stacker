@@ -27,7 +27,7 @@ export class StackController {
     return this.stackService.create(req.user!.sub, body);
   }
 
-  /** 更新堆积记录（仅修改购买/状态/位置/备注等；产品/厂家不可修改） */
+  /** 更新堆积记录（仅修改购买/订单/店铺/状态等；产品/厂家/货号不可修改） */
   @Patch(':id')
   update(@Req() req: AuthedRequest, @Param('id') id: string, @Body() body: UpdateStackDto) {
     return this.stackService.update(req.user!.sub, Number(id), body);

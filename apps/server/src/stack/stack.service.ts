@@ -18,11 +18,19 @@ function mapStack(row: any): Stack {
     manufacturerName: row.manufacturerName ?? row.manufacturer?.name ?? undefined,
     kind: row.product?.kind ?? undefined,
     modelNo: row.modelNo ?? undefined,
+    orderNo: row.orderNo ?? undefined,
     purchasedAt: row.purchasedAt?.toISOString().split('T')[0] ?? undefined,
     purchasePrice: row.purchasePrice ?? undefined,
     currency: row.currency,
+    shippedAt: row.shippedAt?.toISOString().split('T')[0] ?? undefined,
+    receivedAt: row.receivedAt?.toISOString().split('T')[0] ?? undefined,
+    expressCompany: row.expressCompany ?? undefined,
+    trackingNo: row.trackingNo ?? undefined,
+    shopId: row.shopId ?? undefined,
+    shopName: row.shopName ?? row.shop?.name ?? undefined,
     channel: row.channel ?? undefined,
     status: row.status,
+    likeness: row.likeness ?? undefined,
     stage: row.stage ?? undefined,
     wipId: row.wipId ?? undefined,
     location: row.location ?? undefined,
@@ -36,6 +44,7 @@ function mapStack(row: any): Stack {
 const stackInclude = {
   product: { select: { name: true, kind: true } },
   manufacturer: { select: { name: true } },
+  shop: { select: { name: true } },
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -48,21 +57,37 @@ export interface CreateStackDto {
   itemName?: string;
   manufacturerName?: string;
   modelNo?: string;
+  orderNo?: string;
   purchasedAt?: string;
   purchasePrice?: number;
   currency?: string;
+  shippedAt?: string;
+  receivedAt?: string;
+  expressCompany?: string;
+  trackingNo?: string;
   channel?: string;
+  /** 购买店铺：选中的后端店铺为 ID；用户新增为名称 */
+  shop?: number | string;
   status?: string;
+  likeness?: number;
   location?: string;
   notes?: string;
 }
 
 export interface UpdateStackDto {
+  orderNo?: string;
   purchasedAt?: string;
   purchasePrice?: number;
   currency?: string;
+  shippedAt?: string;
+  receivedAt?: string;
+  expressCompany?: string;
+  trackingNo?: string;
   channel?: string;
+  /** 购买店铺：选中的后端店铺为 ID；用户新增为名称 */
+  shop?: number | string;
   status?: string;
+  likeness?: number;
   location?: string;
   notes?: string;
 }
@@ -143,6 +168,8 @@ export class StackService {
     let itemName: string | undefined;
     let manufacturerName: string | undefined;
     let modelNo: string | undefined;
+    let shopId: number | undefined;
+    let shopName: string | undefined;
 
     // 解析厂家：数字 = 选中已有厂家，字符串 = 新建文字
     if (dto.manufacturer != null) {
@@ -170,6 +197,16 @@ export class StackService {
       throw new BadRequestException('必须填写产品或选择已有产品');
     }
 
+    // 解析店铺：数字 = 选中已有店铺，字符串 = 新建文字
+    if (dto.shop != null) {
+      if (typeof dto.shop === 'number') {
+        shopId = dto.shop;
+      } else {
+        const text = String(dto.shop).trim();
+        if (text) shopName = text;
+      }
+    }
+
     const row = await this.prisma.stack.create({
       data: {
         userId,
@@ -178,11 +215,19 @@ export class StackService {
         itemName: itemName ?? undefined,
         manufacturerName: manufacturerName ?? undefined,
         modelNo: modelNo ?? undefined,
+        orderNo: dto.orderNo || undefined,
         purchasedAt: dto.purchasedAt ? new Date(dto.purchasedAt) : undefined,
         purchasePrice: dto.purchasePrice,
         currency: dto.currency || 'CNY',
+        shippedAt: dto.shippedAt ? new Date(dto.shippedAt) : undefined,
+        receivedAt: dto.receivedAt ? new Date(dto.receivedAt) : undefined,
+        expressCompany: dto.expressCompany || undefined,
+        trackingNo: dto.trackingNo || undefined,
         channel: dto.channel || undefined,
+        shopId: shopId ?? undefined,
+        shopName: shopName ?? undefined,
         status: dto.status || 'UNSTARTED',
+        likeness: dto.likeness,
         location: dto.location || undefined,
         notes: dto.notes || undefined,
       },
@@ -192,7 +237,7 @@ export class StackService {
     return mapStack(row);
   }
 
-  /** 更新堆积记录（仅限本人；产品/厂家字段不可修改） */
+  /** 更新堆积记录（仅限本人；产品/厂家/货号不可修改） */
   async update(userId: number, id: number, dto: UpdateStackDto): Promise<Stack> {
     const row = await this.prisma.stack.findUnique({ where: { id } });
     if (!row) throw new NotFoundException('堆积不存在');
@@ -201,11 +246,19 @@ export class StackService {
     const updated = await this.prisma.stack.update({
       where: { id },
       data: {
+        orderNo: dto.orderNo,
         purchasedAt: dto.purchasedAt ? new Date(dto.purchasedAt) : undefined,
         purchasePrice: dto.purchasePrice,
         currency: dto.currency,
+        shippedAt: dto.shippedAt ? new Date(dto.shippedAt) : undefined,
+        receivedAt: dto.receivedAt ? new Date(dto.receivedAt) : undefined,
+        expressCompany: dto.expressCompany,
+        trackingNo: dto.trackingNo,
         channel: dto.channel,
+        shopId: typeof dto.shop === 'number' ? dto.shop : undefined,
+        shopName: typeof dto.shop === 'string' ? dto.shop || undefined : undefined,
         status: dto.status,
+        likeness: dto.likeness,
         location: dto.location,
         notes: dto.notes,
       },
