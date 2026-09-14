@@ -10,6 +10,7 @@ import {
   ToolTypeEnum,
 } from './enums/product';
 import { ProductRelationTypeEnum } from './enums/relation';
+import { ShopPlatformEnum } from './enums/shop';
 import { PurchaseChannelEnum, StackStatusEnum } from './enums/stack';
 
 // ---------------------------------------------------------------------------
@@ -179,6 +180,16 @@ export const productRelationTypeLabels: Record<ProductRelationTypeEnum, string> 
   [ProductRelationTypeEnum.COMPETITOR]: '竞品',
   [ProductRelationTypeEnum.SERIES]: '同系列',
   [ProductRelationTypeEnum.OTHER]: '其他关联',
+};
+
+/** 店铺平台显示表 */
+export const shopPlatformLabels: Record<ShopPlatformEnum, string> = {
+  [ShopPlatformEnum.TAOBAO]: '淘宝',
+  [ShopPlatformEnum.JD]: '京东',
+  [ShopPlatformEnum.XIANYU]: '闲鱼',
+  [ShopPlatformEnum.AMAZON]: '亚马逊',
+  [ShopPlatformEnum.OFFLINE]: '线下',
+  [ShopPlatformEnum.OTHER]: '其他',
 };
 
 // ---------------------------------------------------------------------------

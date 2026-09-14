@@ -12,6 +12,7 @@
   ProductStatusEnum,
   PurchaseChannelEnum,
   ReviewStatusEnum,
+  ShopPlatformEnum,
   SourceTypeEnum,
   StackStatusEnum,
   ToolTypeEnum,
@@ -31,6 +32,7 @@ import {
   productStatusLabels,
   purchaseChannelLabels,
   reviewStatusLabels,
+  shopPlatformLabels,
   sourceTypeLabels,
   stackStatusLabels,
   toolTypeLabels,
@@ -185,6 +187,15 @@ export const purchaseChannelOptions: SelectOption<PurchaseChannelEnum>[] =
   enumToOptions(purchaseChannelLabels);
 
 export { purchaseChannelLabels } from '@model-stacker/data';
+
+// ---------------------------------------------------------------------------
+// 店铺平台 (ShopPlatformEnum)
+// ---------------------------------------------------------------------------
+
+export const shopPlatformOptions: SelectOption<ShopPlatformEnum>[] =
+  enumToOptions(shopPlatformLabels);
+
+export { shopPlatformLabels } from '@model-stacker/data';
 
 // ---------------------------------------------------------------------------
 // 币种 (CurrencyEnum)

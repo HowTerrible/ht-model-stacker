@@ -22,6 +22,8 @@ export interface Article extends TimestampFields, ReviewFields {
   status: ArticleStatusEnum;
   /** 数据来源（格式：来源类型|备注） */
   dataSource?: DataSource;
+  /** 数据更新时间（用于展示该条资料是否过期） */
+  dataUpdatedAt?: DateTimeString;
 }
 
 export interface ArticleQuery {

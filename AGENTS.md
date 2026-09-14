@@ -16,8 +16,10 @@ ModelStacker（堆积人）是面向「堆积人」的物品管理与统计工�
 - **入库方式（三种）**：资料库数据通过①后台直接维护（admin 增删改查），②用户提交经审核入库（「我的提交」Submission 提交完整条目，管理员审核后并入资料库并回填 `linked*Id`），③用户申请补充条目（新增表单中关联项在资料库不存在时，通过表单按钮提交「资料补充申请」，由管理员补充建库）入库；
 - **产品分类**：原「题材」改称「产品分类」，英文 / code 继续使用 `theme`（`Theme`、`themeId` 等不变），树形结构同时用于分类产品与堆积物品（含日用品、五金等）。
 
-**术语对照：** 堆积 Stack / 资料库 Database / 资料补充申请 DataSupplementRequest / 资料提交 Submission / 产品分类 Theme（原题材） / 烂尾 Wip（定义不变）。
-**店铺（Shop）**：已纳入资料库概念范畴，当前仅保留定义与中文文案，ts / 表结构待后续补充。
+**术语对照：** 堆积 Stack / 资料库 Database / 资料补充申请 DataSupplementRequest / 资料提交 Submission / 产品分类 Theme（原题材） / 店铺 Shop / 文章 Article / 烂尾 Wip（定义不变）。
+
+**店铺（Shop）**：资料库概念之一，包含图标 `iconUrl`、名称 `name`、外号 `nickname`、位置 `location`、平台 `platform`（`ShopPlatformEnum`：淘宝 / 京东 / 闲鱼 / 亚马逊 / 线下 / 其他）与必填的 `dataUpdatedAt`；ts / schema 已就绪。
+**数据更新时间（dataUpdatedAt）**：店铺必填，产品 / 厂家 / 文章可选，用于展示数据是否过期。
 
 ## 技术框架
 

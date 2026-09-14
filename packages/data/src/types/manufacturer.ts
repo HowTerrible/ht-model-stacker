@@ -1,5 +1,5 @@
 ﻿import type { CommonStatusEnum, ReviewStatusEnum } from '../enums/common';
-import type { DataSource, Id, ReviewFields, TimestampFields } from './common';
+import type { DateTimeString, DataSource, Id, ReviewFields, TimestampFields } from './common';
 
 /** 产品厂家 / 品牌 */
 export interface Manufacturer extends TimestampFields, ReviewFields {
@@ -19,6 +19,8 @@ export interface Manufacturer extends TimestampFields, ReviewFields {
   status: CommonStatusEnum;
   /** 数据来源（格式：来源类型|备注） */
   dataSource?: DataSource;
+  /** 数据更新时间（用于展示该条资料是否过期） */
+  dataUpdatedAt?: DateTimeString;
 }
 
 export interface ManufacturerQuery {

@@ -41,6 +41,8 @@ model Manufacturer {
   logoUrl     String?
   status      String   @default("ACTIVE")
   dataSource  String?
+  // 数据更新时间（展示该条资料是否过期）
+  dataUpdatedAt DateTime?
   reviewStatus String  @default("PENDING")
   reviewDate  DateTime?
   reviewerId  Int?
@@ -101,6 +103,8 @@ model Product {
   dataSource     String?
   manualsSource  String?
   photosSource   String?
+  // 数据更新时间（展示该条资料是否过期）
+  dataUpdatedAt  DateTime?
   reviewStatus   String       @default("PENDING")
   reviewDate     DateTime?
   reviewerId     Int?
@@ -325,6 +329,8 @@ model Article {
   tags          String?
   status        String         @default("DRAFT")
   dataSource    String?
+  // 数据更新时间（展示该条资料是否过期）
+  dataUpdatedAt DateTime?
   reviewStatus  String         @default("PENDING")
   reviewDate    DateTime?
   reviewerId    Int?
@@ -334,4 +340,26 @@ model Article {
 
   @@index([type, status])
   @@map("article")
+}
+
+model Shop {
+  id            Int      @id @default(autoincrement())
+  // 图标（图片地址）
+  iconUrl       String?
+  // 店铺名称
+  name          String
+  // 外号 / 别名
+  nickname      String?
+  // 位置（线下店铺地址）
+  location      String?
+  // 平台：TAOBAO / JD / XIANYU / AMAZON / OFFLINE / OTHER
+  platform      String   @default("OTHER")
+  // 数据更新时间（展示该店铺数据是否过期）
+  dataUpdatedAt DateTime
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([name])
+  @@index([platform])
+  @@map("shop")
 }

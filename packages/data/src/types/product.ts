@@ -46,6 +46,8 @@ export interface Product extends TimestampFields, ReviewFields {
   manualsSource?: DataSource;
   /** 照片来源（格式：来源类型|备注，多个地址用半角逗号分隔） */
   photosSource?: DataSource;
+  /** 数据更新时间（用于展示该条资料是否过期） */
+  dataUpdatedAt?: DateTimeString;
 }
 
 export interface ProductQuery {
