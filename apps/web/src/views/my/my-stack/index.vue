@@ -8,6 +8,7 @@ import {
   StackStatusEnum,
 } from "@model-stacker/data";
 import type { Stack } from "@model-stacker/data";
+import { Grid, List } from "@element-plus/icons-vue";
 import { getStacks, deleteStack } from "@/api/stack";
 import StackForm from "../components/stack-form.vue";
 import {
@@ -180,16 +181,22 @@ function dateText(item: Stack): string {
 
       <div class="filter-row">
         <div class="scope-group">
-          <el-radio-group v-model="kindScope">
+          <el-radio-group v-model="kindScope" size="small">
             <el-radio-button value="ALL">全部</el-radio-button>
             <el-radio-button :value="ProductKindEnum.MODEL">仅模型</el-radio-button>
             <el-radio-button :value="ProductKindEnum.TOOL_SUPPLY">仅工具辅料</el-radio-button>
           </el-radio-group>
         </div>
 
-        <el-radio-group v-model="viewMode">
-          <el-radio-button value="list">通栏</el-radio-button>
-          <el-radio-button value="grid">网格</el-radio-button>
+        <el-radio-group v-model="viewMode" size="small" class="view-mode-toggle">
+          <!-- 通栏 -->
+          <el-radio-button value="list">
+            <el-icon><List /></el-icon>
+          </el-radio-button>
+          <!-- 栅格 -->
+          <el-radio-button value="grid">
+            <el-icon><Grid /></el-icon>
+          </el-radio-button>
         </el-radio-group>
 
         <el-collapse v-model="moreExpanded" class="more-filter">
@@ -242,7 +249,7 @@ function dateText(item: Stack): string {
       </div>
     </header>
 
-    <div v-loading="loading">
+    <div v-loading="loading" class="list-scroll">
       <div v-if="filteredList.length" class="card-list" :class="viewMode">
         <template v-if="viewMode === 'list'">
           <article
@@ -343,18 +350,33 @@ function dateText(item: Stack): string {
 </template>
 
 <style scoped>
+/* 页面外部固定占位：顶部页头 49px + 模块横向导航(60px+12px 间距) 72px + 主区上下 padding 24px */
 .stack-page {
+  --stack-page-offset: 145px;
   display: flex;
   flex-direction: column;
+  height: calc(100vh - var(--stack-page-offset));
+  height: calc(100dvh - var(--stack-page-offset)); /* 不支持 dvh 时退回 100vh */
+  overflow: hidden;
 }
 
 .list-header {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  flex-shrink: 0;
   margin-bottom: 12px;
   padding: 12px 12px 0;
   background: var(--app-surface-color, #fff);
+}
+
+/* 唯一可滚动区域：卡片列表 / 空态 */
+.list-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px 12px 12px;
 }
 
 .search-row {
@@ -497,6 +519,7 @@ function dateText(item: Stack): string {
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+  flex-shrink: 0;
   margin-top: 16px;
   padding-top: 12px;
   border-top: 1px solid var(--el-border-color-lighter, #ebeef5);
@@ -504,6 +527,13 @@ function dateText(item: Stack): string {
 
 .fab-add {
   display: none;
+}
+
+@media (min-width: 768px) {
+  /* 主区上下 padding 20+24=44，页头 49 + 导航 72 */
+  .stack-page {
+    --stack-page-offset: 165px;
+  }
 }
 
 @media (max-width: 767px) {

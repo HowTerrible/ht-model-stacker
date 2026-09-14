@@ -5,8 +5,9 @@ import type { DateTimeString, Id, ReviewFields, TimestampFields } from './common
 /**
  * 资料补充申请。
  *
- * 堆积与资料库不强绑定：用户添加堆积时若资料库中没有对应产品 / 厂家，
- * 可一键提交补充申请；管理员审核并建库后，自动回填绑定到申请来源的堆积。
+ * 堆积与资料库不强绑定：用户添加堆积时若资料库（产品 / 厂家 / 店铺 / 文章）中
+ * 没有对应产品 / 厂家，可一键提交补充申请；管理员审核并建库后，
+ * 自动回填绑定到申请来源的堆积。
  */
 export interface DataSupplementRequest extends TimestampFields, ReviewFields {
   id: Id;

@@ -3,7 +3,11 @@ import { computed, reactive, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import type { FormInstance, FormRules } from "element-plus";
 import type { Id } from "@model-stacker/data";
-import { CurrencyEnum, PurchaseChannelEnum, StackStatusEnum } from "@model-stacker/data";
+import {
+  CurrencyEnum,
+  PurchaseChannelEnum,
+  StackStatusEnum,
+} from "@model-stacker/data";
 import { channelOptions, currencyOptions, statusOptions } from "./options";
 import {
   deleteStack,

@@ -54,7 +54,7 @@ const router = createRouter({
           ],
         },
         {
-          // 资料库（DataBase）：检索品牌、产品、产品价格等内容
+          // 资料库（DataBase）：检索厂家、产品、价格走向、店铺、文章等内容
           path: 'database',
           name: 'database',
           component: () => import('@/views/database/index.vue'),

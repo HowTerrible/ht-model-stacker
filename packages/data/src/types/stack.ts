@@ -43,6 +43,7 @@ export interface Stack extends TimestampFields {
   wipId?: Id;
   /** 堆积位置 */
   location?: string;
+  /** 备注 */
   notes?: string;
 }
 
