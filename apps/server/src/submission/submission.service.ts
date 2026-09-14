@@ -86,7 +86,7 @@ function mapProductSubmission(row: any): PsType {
 /**
  * 提交箱业务：用户提交厂家 / 产品资料，管理员审核。
  * - 提交：写入 ManufacturerSubmission / ProductSubmission（PENDING）。
- * - 通过：把提交内容「合并」进正式资料库（Manufacturer / Product），并回填 linkedXxxId。
+ * - 通过：把提交内容「合并」进正式资料库，并回填 linkedXxxId。
  * - 拒绝：仅更新审核状态与备注。
  */
 @Injectable()

@@ -6,8 +6,8 @@ import type { DataSource, DateTimeString, Id, ReviewFields, TimestampFields } fr
  * 厂家提交（用户提交 / 管理员审核）。
  *
  * 方案B：用户提交的厂家资料先落在独立「提交箱」，管理员审核通过后
- * 合并进正式资料库（资料库 = 产品 / 厂家 / 店铺 / 文章的集合），并回填 linkedManufacturerId。
- * 资料库数据可由①后台直接维护、②用户提交经审核入库两种形式添加；
+ * 合并进正式资料库，并回填 linkedManufacturerId。
+ * 资料库数据可通过①后台直接维护、②用户提交经审核、③用户申请补充条目三种形式入库；
  * 与 DataSupplementRequest（堆积一键补库申请）不同，这里是完整的厂家资料条目。
  */
 export interface ManufacturerSubmission extends TimestampFields, ReviewFields {
@@ -55,7 +55,7 @@ export type ManufacturerSubmissionInput = Pick<
  * 产品提交（用户提交 / 管理员审核）。
  *
  * 方案B：用户提交的产品资料先落在独立「提交箱」，管理员审核通过后
- * 合并进正式资料库 Product（资料库 = 产品 / 厂家 / 店铺 / 文章的集合）。
+ * 合并进正式资料库。
  * 提交产品不强制关联已有厂家：有则填 manufacturerId，没有可填
  * manufacturerName 自由文本（审核建库 / 建厂家后回填关联）。
  */

@@ -21,7 +21,7 @@ export class StackController {
     return this.stackService.getById(req.user!.sub, Number(id));
   }
 
-  /** 新建堆积记录（产品/厂家不强制关联资料库） */
+  /** 新建堆积记录（堆积不强绑定资料库） */
   @Post()
   create(@Req() req: AuthedRequest, @Body() body: CreateStackDto) {
     return this.stackService.create(req.user!.sub, body);
